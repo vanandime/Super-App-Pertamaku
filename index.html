@@ -3,24 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super App Modular</title>
+    <title>Modular Super App</title>
     <style>
         body { padding: 40px; font-family: Arial, sans-serif; transition: background 0.3s; }
-        .card { background: white; padding: 20px; border-radius: 8px; margin-top: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body id="app-body">
     <h1 id="app-title">Memuat Super App...</h1>
     <p id="app-status">Sedang menghubungkan ke GitHub Gist...</p>
 
-    <!-- Kotak Tampilan Gist -->
-    <div class="card">
-        <h3>File Gist Saya:</h3>
-        <script src="https://gist.github.com/vanandime/0c17195c5071e6db97540e40e304ad33.js"></script>
-    </div>
-
     <script>
-        const configUrl = 'https://gist.githubusercontent.com/vanandime/0c17195c5071e6db97540e40e304ad33/raw/74ace3068b4f964176b44f700041badbac4dde37/config.json';
+        // URL raw langsung tanpa kode commit panjang agar selalu sinkron otomatis
+        const configUrl = 'https://gist.githubusercontent.com/vanandime/0c17195c5071e6db97540e40e304ad33/raw/config.json';
 
         async function loadSuperApp() {
             try {
