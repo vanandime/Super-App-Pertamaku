@@ -4,36 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Super App Modular</title>
+    <style>
+        body { padding: 40px; font-family: Arial, sans-serif; transition: background 0.3s; }
+        .card { background: white; padding: 20px; border-radius: 8px; margin-top: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .btn { display: inline-block; padding: 10px 15px; margin: 5px; background: #333; color: white; text-decoration: none; border-radius: 5px; }
+    </style>
 </head>
-<body id="app-body" style="padding: 40px; font-family: Arial, sans-serif; transition: background 0.3s;">
+<body id="app-body">
     <h1 id="app-title">Memuat Super App...</h1>
-    <p id="app-status">Sedang menghubungkan ke GitHub Gist...</p>
+    <p id="app-announcement"></p>
+
+    <div class="card">
+        <h3>Menu Aplikasi (Live dari Gist):</h3>
+        <div id="menu-container">Memuat menu...</div>
+    </div>
+
+    <p id="app-status" style="margin-top: 20px; font-size: 12px; color: #555;"></p>
 
     <script>
-        // Link RAW Gist kamu
-        const configUrl = 'https://gist.githubusercontent.com/vanandime/0c17195c5071e6db97540e40e304ad33/raw/74ace3068b4f964176b44f700041badbac4dde37/config.json';
+        const configUrl = 'https://gist.githubusercontent.com/vanandime/0c17195c5071e6db97540e40e304ad33/raw/config.json';
 
         async function loadSuperApp() {
             try {
                 const response = await fetch(configUrl);
                 const config = await response.json();
 
-                // Terapkan data dari Gist ke halaman web
-                document.getElementById('app-title').innerText = config.appName || 'Super App';
-                document.getElementById('app-body').style.backgroundColor = config.themeColor || '#ffffff';
-                document.getElementById('app-status').innerText = "Status: Berhasil dimuat secara live dari GitHub Gist!";
+                // Terapkan tema dan teks utama
+                document.getElementById('app-title').innerText = config.appName;
+                document.getElementById('app-announcement').innerText = config.announcement;
+                document.getElementById('app-body').style.backgroundColor = config.themeColor;
+                document.getElementById('app-status').innerText = "Status: Terhubung secara live ke Gist!";
 
-                // Simpan ke cache lokal untuk offline
+                // Render tombol menu secara otomatis
+                const menuContainer = document.getElementById('menu-container');
+                menuContainer.innerHTML = '';
+                config.menu.forEach(item => {
+                    const a = document.createElement('a');
+                    a.href = item.link;
+                    a.innerText = item.text;
+                    a.className = 'btn';
+                    a.target = '_blank';
+                    menuContainer.appendChild(a);
+                });
+
+                // Simpan cache offline
                 localStorage.setItem('app_config', JSON.stringify(config));
             } catch (error) {
                 console.warn('Gagal terhubung, menggunakan cache lokal...');
-                const cachedConfig = localStorage.getItem('app_config');
-                
-                if (cachedConfig) {
-                    const config = JSON.parse(cachedConfig);
-                    document.getElementById('app-title').innerText = config.appName + " (Mode Offline)";
-                    document.getElementById('app-body').style.backgroundColor = config.themeColor || '#ffffff';
-                    document.getElementById('app-status').innerText = "Status: Menggunakan data cadangan offline.";
+                const cached = localStorage.getItem('app_config');
+                if (cached) {
+                    const config = JSON.parse(cached);
+                    document.getElementById('app-title').innerText = config.appName + " (Offline)";
+                    document.getElementById('app-announcement').innerText = config.announcement;
+                    document.getElementById('app-body').style.backgroundColor = config.themeColor;
+                    document.getElementById('app-status').innerText = "Status: Mode Offline.";
                 } else {
                     document.getElementById('app-status').innerText = "Gagal memuat konfigurasi.";
                 }
