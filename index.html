@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super App Pertamaku</title>
+</head>
+<body id="app-body" style="padding: 40px; font-family: Arial, sans-serif; transition: background 0.3s;">
+    <h1 id="app-title">Memuat Super App...</h1>
+    <p id="app-status">Sedang menghubungkan ke GitHub Gist...</p>
+
+    <script>
+        // 1. Tempel URL RAW Gist kamu di sini (ganti tulisan di dalam tanda kutip)
+        const gistRawUrl = 'MASUKKAN_URL_RAW_GIST_DISINI';
+
+        async function loadApp() {
+            try {
+                const response = await fetch(gistRawUrl);
+                const data = await response.json();
+
+                // Terapkan data dari Gist ke halaman web secara live
+                document.getElementById('app-title').innerText = data.appName;
+                document.getElementById('app-body').style.backgroundColor = data.themeColor;
+                document.getElementById('app-status').innerText = "Status: Berhasil dimuat secara live dari Gist!";
+
+                // Simpan ke memori lokal (LocalStorage) untuk cadangan offline
+                localStorage.setItem('app_config', JSON.stringify(data));
+            } catch (error) {
+                console.warn('Gagal terhubung, mencoba memuat data lokal...');
+                const cached = localStorage.getItem('app_config');
+                if (cached) {
+                    const data = JSON.parse(cached);
+                    document.getElementById('app-title').innerText = data.appName + " (Mode Offline)";
+                    document.getElementById('app-body').style.backgroundColor = data.themeColor;
+                    document.getElementById('app-status').innerText = "Status: Menggunakan data cadangan offline.";
+                } else {
+                    document.getElementById('app-status').innerText = "Gagal memuat konfigurasi.";
+                }
+            }
+        }
+
+        loadApp();
+    </script>
+</body>
+</html>
