@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super App Modular</title>
+    <title>Modular Super App</title>
     <style>
         body { padding: 40px; font-family: Arial, sans-serif; transition: background 0.3s; }
         .card { background: white; padding: 20px; border-radius: 8px; margin-top: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
@@ -15,30 +15,36 @@
     <p id="app-announcement"></p>
 
     <div class="card">
-        <h3>Menu Aplikasi (Live dari Gist):</h3>
+        <h3>Modul Menu (Live dari Gist):</h3>
         <div id="menu-container">Memuat menu...</div>
     </div>
 
     <p id="app-status" style="margin-top: 20px; font-size: 12px; color: #555;"></p>
 
     <script>
-        const configUrl = 'https://gist.githubusercontent.com/vanandime/0c17195c5071e6db97540e40e304ad33/raw/config.json';
+        const configUrl = 'https://gist.githubusercontent.com/vanandime/0c17195c5071e6db97540e40e304ad33/raw/648ccedaa6a7d0ab5fb79d842edbf9b54f56a27f/config.json';
+        const modulesUrl = 'https://gist.githubusercontent.com/vanandime/0c17195c5071e6db97540e40e304ad33/raw/648ccedaa6a7d0ab5fb79d842edbf9b54f56a27f/modules.json';
 
         async function loadSuperApp() {
             try {
-                const response = await fetch(configUrl);
-                const config = await response.json();
+                const [configRes, modulesRes] = await Promise.all([
+                    fetch(configUrl),
+                    fetch(modulesUrl)
+                ]);
 
-                // Terapkan tema dan teks utama
+                const config = await configRes.json();
+                const modules = await modulesRes.json();
+
+                // Terapkan tema dan teks dari config.json
                 document.getElementById('app-title').innerText = config.appName;
                 document.getElementById('app-announcement').innerText = config.announcement;
                 document.getElementById('app-body').style.backgroundColor = config.themeColor;
                 document.getElementById('app-status').innerText = "Status: Terhubung secara live ke Gist!";
 
-                // Render tombol menu secara otomatis
+                // Render menu dari modules.json
                 const menuContainer = document.getElementById('menu-container');
                 menuContainer.innerHTML = '';
-                config.menu.forEach(item => {
+                modules.menuList.forEach(item => {
                     const a = document.createElement('a');
                     a.href = item.link;
                     a.innerText = item.text;
@@ -47,17 +53,33 @@
                     menuContainer.appendChild(a);
                 });
 
-                // Simpan cache offline
+                // Simpan cache lokal
                 localStorage.setItem('app_config', JSON.stringify(config));
+                localStorage.setItem('app_modules', JSON.stringify(modules));
             } catch (error) {
                 console.warn('Gagal terhubung, menggunakan cache lokal...');
-                const cached = localStorage.getItem('app_config');
-                if (cached) {
-                    const config = JSON.parse(cached);
+                const cachedConfig = localStorage.getItem('app_config');
+                const cachedModules = localStorage.getItem('app_modules');
+                
+                if (cachedConfig && cachedModules) {
+                    const config = JSON.parse(cachedConfig);
+                    const modules = JSON.parse(cachedModules);
+                    
                     document.getElementById('app-title').innerText = config.appName + " (Offline)";
                     document.getElementById('app-announcement').innerText = config.announcement;
                     document.getElementById('app-body').style.backgroundColor = config.themeColor;
                     document.getElementById('app-status').innerText = "Status: Mode Offline.";
+
+                    const menuContainer = document.getElementById('menu-container');
+                    menuContainer.innerHTML = '';
+                    modules.menuList.forEach(item => {
+                        const a = document.createElement('a');
+                        a.href = item.link;
+                        a.innerText = item.text;
+                        a.className = 'btn';
+                        a.target = '_blank';
+                        menuContainer.appendChild(a);
+                    });
                 } else {
                     document.getElementById('app-status').innerText = "Gagal memuat konfigurasi.";
                 }
