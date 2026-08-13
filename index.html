@@ -13,14 +13,13 @@
     <h1 id="app-title">Memuat Super App...</h1>
     <p id="app-status">Sedang menghubungkan ke GitHub Gist...</p>
 
-    <!-- Tampilan Embed Gist Kamu Secara Visual -->
+    <!-- Kotak Tampilan Gist -->
     <div class="card">
         <h3>File Gist Saya:</h3>
         <script src="https://gist.github.com/vanandime/0c17195c5071e6db97540e40e304ad33.js"></script>
     </div>
 
     <script>
-        // Link RAW Gist config.json kamu
         const configUrl = 'https://gist.githubusercontent.com/vanandime/0c17195c5071e6db97540e40e304ad33/raw/74ace3068b4f964176b44f700041badbac4dde37/config.json';
 
         async function loadSuperApp() {
@@ -28,24 +27,18 @@
                 const response = await fetch(configUrl);
                 const config = await response.json();
 
-                // Terapkan data dari Gist ke halaman web secara live
                 document.getElementById('app-title').innerText = config.appName || 'Super App';
                 document.getElementById('app-body').style.backgroundColor = config.themeColor || '#ffffff';
                 document.getElementById('app-status').innerText = "Status: Berhasil dimuat secara live dari GitHub Gist!";
 
-                // Simpan ke cache lokal untuk offline
                 localStorage.setItem('app_config', JSON.stringify(config));
             } catch (error) {
-                console.warn('Gagal terhubung, menggunakan cache lokal...');
                 const cachedConfig = localStorage.getItem('app_config');
-                
                 if (cachedConfig) {
                     const config = JSON.parse(cachedConfig);
                     document.getElementById('app-title').innerText = config.appName + " (Mode Offline)";
                     document.getElementById('app-body').style.backgroundColor = config.themeColor || '#ffffff';
                     document.getElementById('app-status').innerText = "Status: Menggunakan data cadangan offline.";
-                } else {
-                    document.getElementById('app-status').innerText = "Gagal memuat konfigurasi.";
                 }
             }
         }
