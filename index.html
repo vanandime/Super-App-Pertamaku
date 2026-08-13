@@ -3,35 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super App Pertamaku</title>
+    <title>Super App Modular</title>
 </head>
 <body id="app-body" style="padding: 40px; font-family: Arial, sans-serif; transition: background 0.3s;">
     <h1 id="app-title">Memuat Super App...</h1>
     <p id="app-status">Sedang menghubungkan ke GitHub Gist...</p>
 
     <script>
-        // 1. Tempel URL RAW Gist kamu di sini (ganti tulisan di dalam tanda kutip)
-        const gistRawUrl = 'https://gist.githubusercontent.com/vanandime/0c17195c5071e6db97540e40e304ad33/raw/74ace3068b4f964176b44f700041badbac4dde37/config.json';
+        // Link RAW Gist kamu
+        const configUrl = 'https://gist.githubusercontent.com/vanandime/0c17195c5071e6db97540e40e304ad33/raw/74ace3068b4f964176b44f700041badbac4dde37/config.json';
 
-        async function loadApp() {
+        async function loadSuperApp() {
             try {
-                const response = await fetch(gistRawUrl);
-                const data = await response.json();
+                const response = await fetch(configUrl);
+                const config = await response.json();
 
-                // Terapkan data dari Gist ke halaman web secara live
-                document.getElementById('app-title').innerText = data.appName;
-                document.getElementById('app-body').style.backgroundColor = data.themeColor;
-                document.getElementById('app-status').innerText = "Status: Berhasil dimuat secara live dari Gist!";
+                // Terapkan data dari Gist ke halaman web
+                document.getElementById('app-title').innerText = config.appName || 'Super App';
+                document.getElementById('app-body').style.backgroundColor = config.themeColor || '#ffffff';
+                document.getElementById('app-status').innerText = "Status: Berhasil dimuat secara live dari GitHub Gist!";
 
-                // Simpan ke memori lokal (LocalStorage) untuk cadangan offline
-                localStorage.setItem('app_config', JSON.stringify(data));
+                // Simpan ke cache lokal untuk offline
+                localStorage.setItem('app_config', JSON.stringify(config));
             } catch (error) {
-                console.warn('Gagal terhubung, mencoba memuat data lokal...');
-                const cached = localStorage.getItem('app_config');
-                if (cached) {
-                    const data = JSON.parse(cached);
-                    document.getElementById('app-title').innerText = data.appName + " (Mode Offline)";
-                    document.getElementById('app-body').style.backgroundColor = data.themeColor;
+                console.warn('Gagal terhubung, menggunakan cache lokal...');
+                const cachedConfig = localStorage.getItem('app_config');
+                
+                if (cachedConfig) {
+                    const config = JSON.parse(cachedConfig);
+                    document.getElementById('app-title').innerText = config.appName + " (Mode Offline)";
+                    document.getElementById('app-body').style.backgroundColor = config.themeColor || '#ffffff';
                     document.getElementById('app-status').innerText = "Status: Menggunakan data cadangan offline.";
                 } else {
                     document.getElementById('app-status').innerText = "Gagal memuat konfigurasi.";
@@ -39,7 +40,7 @@
             }
         }
 
-        loadApp();
+        loadSuperApp();
     </script>
 </body>
 </html>
