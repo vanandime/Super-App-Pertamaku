@@ -299,7 +299,7 @@
                     if (parsed.config && parsed.config.apiSettings) appState.config.apiSettings = parsed.config.apiSettings;
                 } else {
                     appState.posts = [
-                        { id: 1, author: 'admin', text: 'Nexus Core OS v13.1 Ultimate Elite online dengan arsitektur terlengkap!', time: 'Baru saja', likes: 40 }
+                        { id: 1, author: 'admin', text: 'Nexus Core OS v13.1 Ultimate Elite berhasil dibangun ulang dari awal secara optimal!', time: 'Baru saja', likes: 50 }
                     ];
                 }
             } catch (e) {
@@ -343,7 +343,7 @@
                 if(res.ok) {
                     const remoteConfig = await res.json();
                     if(remoteConfig && remoteConfig.categories) {
-                        // Keep integrated or merge
+                        // Remote sync integration
                     }
                 }
             } catch(e) {}
@@ -627,7 +627,7 @@
                         <span style="font-size:10px; background:rgba(0,0,0,0.3); padding:2px 8px; border-radius:8px; font-weight:700;">${user.role}</span>
                         <div class="profile-stats">
                             <div><b>${appState.following.length}</b> Mengikuti</div>
-                            <div><b>30</b> Pengikut</div>
+                            <div><b>32</b> Pengikut</div>
                         </div>
                     </div>
                     <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:14px; display:flex; flex-direction:column; gap:10px;">
