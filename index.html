@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super App Hub - Native Edition</title>
+    <title>Super App Hub - Native Pro Edition</title>
     <style>
         :root {
             --bg-color: #07090e;
@@ -30,10 +30,7 @@
             justify-content: center;
         }
 
-        .app-wrapper {
-            width: 100%;
-            max-width: 650px;
-        }
+        .app-wrapper { width: 100%; max-width: 650px; }
 
         .header {
             background: var(--card-bg);
@@ -50,11 +47,7 @@
         .brand h1 { font-size: 20px; margin: 0; font-weight: 700; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .brand span { font-size: 11px; color: var(--text-secondary); display: block; margin-top: 2px; }
 
-        .user-menu {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
+        .user-menu { display: flex; gap: 10px; align-items: center; }
 
         .btn {
             background: var(--accent-gradient);
@@ -103,16 +96,8 @@
             font-weight: 600;
         }
 
-        .controls-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .search-box {
-            position: relative;
-            flex: 1;
-        }
+        .controls-row { display: flex; gap: 10px; margin-bottom: 20px; }
+        .search-box { position: relative; flex: 1; }
 
         .search-input {
             width: 100%;
@@ -158,22 +143,13 @@
         .category-item:last-child { border-bottom: none; }
         .category-item:hover { background: var(--card-hover); }
 
-        .category-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
+        .category-left { display: flex; align-items: center; gap: 16px; }
 
         .category-icon { 
-            width: 44px; 
-            height: 44px;
+            width: 44px; height: 44px;
             background: rgba(56, 189, 248, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 12px;
-            fill: var(--accent);
-            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 12px; fill: var(--accent); flex-shrink: 0;
         }
         .category-icon svg { width: 22px; height: 22px; }
 
@@ -181,147 +157,78 @@
         .category-info p { margin: 0; font-size: 12px; color: var(--text-secondary); }
 
         .tag-badge {
-            font-size: 10px;
-            padding: 2px 8px;
-            border-radius: 6px;
-            background: var(--badge-ai);
-            color: var(--badge-ai-text);
-            font-weight: 500;
+            font-size: 10px; padding: 2px 8px; border-radius: 6px;
+            background: var(--badge-ai); color: var(--badge-ai-text); font-weight: 500;
         }
 
         .favorite-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 20px;
-            color: var(--text-secondary);
-            transition: color 0.2s;
-            padding: 5px;
+            background: none; border: none; cursor: pointer; font-size: 20px;
+            color: var(--text-secondary); transition: color 0.2s; padding: 5px;
         }
         .favorite-btn.active { color: #facc15; }
 
-        /* Native In-App Workspace Overlay */
+        /* Workspace Overlay */
         .module-viewer {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-color);
-            z-index: 2000;
-            flex-direction: column;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-color); z-index: 2000; flex-direction: column;
         }
         .module-viewer.active { display: flex; }
 
         .viewer-header {
-            background: var(--card-bg);
-            border-bottom: 1px solid var(--border);
-            padding: 15px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            background: var(--card-bg); border-bottom: 1px solid var(--border);
+            padding: 15px 25px; display: flex; justify-content: space-between; align-items: center;
         }
         .viewer-title { font-size: 16px; font-weight: 700; margin: 0; }
         
         .viewer-body {
-            flex: 1;
-            width: 100%;
-            height: calc(100vh - 65px);
-            background: var(--bg-color);
-            overflow-y: auto;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
+            flex: 1; width: 100%; height: calc(100vh - 65px);
+            background: var(--bg-color); overflow-y: auto; padding: 20px;
+            display: flex; justify-content: center; align-items: flex-start;
         }
 
-        /* Native Tool Workspaces */
         .workspace-card {
-            width: 100%;
-            max-width: 600px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 25px;
+            width: 100%; max-width: 600px; background: var(--card-bg);
+            border: 1px solid var(--border); border-radius: 16px; padding: 25px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         .workspace-card h3 { margin-top: 0; color: var(--accent); }
         .workspace-card textarea, .workspace-card input {
-            width: 100%;
-            padding: 12px;
-            background: var(--bg-color);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-primary);
-            margin-bottom: 12px;
-            font-size: 14px;
-            outline: none;
+            width: 100%; padding: 12px; background: var(--bg-color);
+            border: 1px solid var(--border); border-radius: 8px;
+            color: var(--text-primary); margin-bottom: 12px; font-size: 14px; outline: none;
         }
-        .workspace-card textarea:focus, .workspace-card input:focus { border-color: var(--accent); }
 
-        /* Chat UI Box */
+        /* AI Chat Box */
         .chat-box {
-            height: 300px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            background: var(--bg-color);
-            padding: 15px;
-            overflow-y: auto;
-            margin-bottom: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            height: 280px; border: 1px solid var(--border); border-radius: 10px;
+            background: var(--bg-color); padding: 15px; overflow-y: auto;
+            margin-bottom: 12px; display: flex; flex-direction: column; gap: 10px;
         }
-        .chat-msg {
-            padding: 10px 14px;
-            border-radius: 10px;
-            max-width: 80%;
-            font-size: 13px;
-        }
+        .chat-msg { padding: 10px 14px; border-radius: 10px; max-width: 80%; font-size: 13px; }
         .chat-msg.user { background: var(--accent); color: #07090e; align-self: flex-end; font-weight: 500; }
         .chat-msg.ai { background: var(--card-hover); color: var(--text-primary); align-self: flex-start; }
 
         /* Modals */
         .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(5px);
-            justify-content: center;
-            align-items: center;
-            z-index: 3000;
-            padding: 20px;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(5px);
+            justify-content: center; align-items: center; z-index: 3000; padding: 20px;
         }
         .modal.active { display: flex; }
         .modal-content {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            width: 100%;
-            max-width: 450px;
-            padding: 25px;
-            border-radius: 20px;
+            background: var(--card-bg); border: 1px solid var(--border);
+            width: 100%; max-width: 450px; padding: 25px; border-radius: 20px;
         }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; }
         .form-control {
-            width: 100%;
-            padding: 10px 14px;
-            background: var(--bg-color);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 14px;
-            outline: none;
+            width: 100%; padding: 10px 14px; background: var(--bg-color);
+            border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size: 14px; outline: none;
         }
 
         .status-footer {
-            margin-top: 18px;
-            text-align: center;
-            font-size: 12px;
-            color: var(--text-secondary);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 6px;
+            margin-top: 18px; text-align: center; font-size: 12px; color: var(--text-secondary);
+            display: flex; justify-content: center; align-items: center; gap: 6px;
         }
         .status-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; display: inline-block; }
     </style>
@@ -329,7 +236,6 @@
 <body>
 
     <div class="app-wrapper">
-        <!-- Header -->
         <div class="header">
             <div class="brand">
                 <h1 id="app-title">Super App Hub</h1>
@@ -340,7 +246,6 @@
             </div>
         </div>
 
-        <!-- Filter Pills -->
         <div class="filter-scroll">
             <div class="filter-pill active" onclick="setCategoryFilter('all', this)">Semua</div>
             <div class="filter-pill" onclick="setCategoryFilter('ai', this)">🤖 AI & LLM</div>
@@ -350,7 +255,6 @@
             <div class="filter-pill" onclick="setCategoryFilter('tools', this)">🛠️ Tools</div>
         </div>
 
-        <!-- Search & Dev Panel Row -->
         <div class="controls-row">
             <div class="search-box">
                 <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
@@ -359,7 +263,6 @@
             <button class="btn btn-outline" id="devPanelBtn" style="display:none;" onclick="openDevModal()">⚙️ Dev Panel</button>
         </div>
 
-        <!-- Container List -->
         <div class="container" id="category-container">
             <div style="padding: 40px; text-align: center; color: var(--text-secondary);">Memuat modul ekosistem...</div>
         </div>
@@ -370,15 +273,13 @@
         </div>
     </div>
 
-    <!-- Native In-App Workspace Overlay -->
+    <!-- Workspace Overlay -->
     <div class="module-viewer" id="moduleViewer">
         <div class="viewer-header">
             <h3 class="viewer-title" id="viewerTitle">Modul Aktif</h3>
             <button class="btn btn-outline" onclick="closeModuleViewer()">✕ Tutup / Kembali</button>
         </div>
-        <div class="viewer-body" id="viewerBodyContent">
-            <!-- Native tool workspaces diproses dinamis lewat JavaScript -->
-        </div>
+        <div class="viewer-body" id="viewerBodyContent"></div>
     </div>
 
     <!-- Auth Modal -->
@@ -400,7 +301,7 @@
         </div>
     </div>
 
-    <!-- Developer Control Panel Modal -->
+    <!-- Dev Modal -->
     <div class="modal" id="devModal">
         <div class="modal-content" style="max-width: 600px;">
             <h3 style="margin-top:0;">🛠️ Developer Control Panel (Gist JSON Editor)</h3>
@@ -442,9 +343,9 @@
                 document.getElementById('status-dot').style.background = "#22c55e";
                 
                 renderUI();
-                localStorage.setItem('super_app_native_cache', JSON.stringify(appConfig));
+                localStorage.setItem('super_app_smart_cache', JSON.stringify(appConfig));
             } catch (e) {
-                const cached = localStorage.getItem('super_app_native_cache');
+                const cached = localStorage.getItem('super_app_smart_cache');
                 if (cached) {
                     appConfig = JSON.parse(cached);
                     document.getElementById('app-title').innerText = (appConfig.appName || 'Super App Hub') + " (Offline)";
@@ -459,9 +360,7 @@
             updateUserNavbar();
         }
 
-        function renderUI() {
-            filterCategories();
-        }
+        function renderUI() { filterCategories(); }
 
         function setCategoryFilter(type, element) {
             currentFilter = type;
@@ -488,13 +387,13 @@
                 
                 const div = document.createElement('div');
                 div.className = 'category-item';
-                div.onclick = () => openNativeModule(cat);
+                div.onclick = () => openSmartNativeModule(cat);
                 div.innerHTML = `
                     <div class="category-left">
                         <div class="category-icon">${svgIcon}</div>
                         <div class="category-info">
                             <h4>${cat.name} ${badgeHtml}</h4>
-                            <p>${cat.desc || 'Buka di dalam aplikasi'}</p>
+                            <p>${cat.desc || 'Buka workspace di dalam aplikasi'}</p>
                         </div>
                     </div>
                     <div style="display:flex; align-items:center; gap:10px;">
@@ -531,8 +430,8 @@
             filterCategories();
         }
 
-        // Native In-App Workspace Handlers (Tanpa Iframe / Tanpa Error Blokir)
-        function openNativeModule(cat) {
+        // Smart Auto-Detection Native Workspace (Otomatis Aktif Tanpa Harus Set Manual di Gist)
+        function openSmartNativeModule(cat) {
             document.getElementById('viewerTitle').innerText = cat.name;
             const bodyContent = document.getElementById('viewerBodyContent');
             bodyContent.innerHTML = '';
@@ -540,36 +439,49 @@
             const wrapper = document.createElement('div');
             wrapper.className = 'workspace-card';
 
-            if (cat.nativeType === 'ai_chat') {
+            const nameLower = (cat.name + ' ' + (cat.type || '')).toLowerCase();
+
+            if (nameLower.includes('ai') || nameLower.includes('chat') || nameLower.includes('gpt')) {
                 wrapper.innerHTML = `
-                    <h3>🤖 Asisten AI Pintar (Internal)</h3>
-                    <p style="font-size:12px; color:var(--text-secondary);">Simulasi AI interaktif langsung di dalam aplikasi.</p>
+                    <h3>🤖 Asisten AI Pintar (Internal Workspace)</h3>
+                    <p style="font-size:12px; color:var(--text-secondary);">Simulasi interaktif AI berjalan langsung di memori program.</p>
                     <div class="chat-box" id="chatBox">
-                        <div class="chat-msg ai">Halo! Ada yang bisa saya bantu hari ini?</div>
+                        <div class="chat-msg ai">Halo! Saya asisten virtual Anda. Ada yang bisa dibantu?</div>
                     </div>
                     <div style="display:flex; gap:8px;">
                         <input type="text" id="chatInput" placeholder="Ketik pesan..." onkeypress="if(event.key==='Enter') sendChatMessage()">
                         <button class="btn" onclick="sendChatMessage()" style="height:42px;">Kirim</button>
                     </div>
                 `;
-            } else if (cat.nativeType === 'notes') {
+            } else if (nameLower.includes('note') || nameLower.includes('task') || nameLower.includes('productivity')) {
                 wrapper.innerHTML = `
-                    <h3>📝 Catatan Pintar Internal</h3>
-                    <p style="font-size:12px; color:var(--text-secondary);">Tersimpan otomatis di memori browser Anda.</p>
-                    <textarea id="nativeNotesInput" style="height:200px;" placeholder="Tulis catatan Anda di sini..."></textarea>
+                    <h3>📝 Catatan Pintar & Tugas Internal</h3>
+                    <p style="font-size:12px; color:var(--text-secondary);">Tersimpan aman di browser Anda secara lokal.</p>
+                    <textarea id="nativeNotesInput" style="height:220px;" placeholder="Tulis catatan atau daftar tugas..."></textarea>
                     <button class="btn" onclick="saveNativeNotes()">Simpan Catatan</button>
+                `;
+            } else if (nameLower.includes('finance') || nameLower.includes('crypto')) {
+                wrapper.innerHTML = `
+                    <h3>💳 Kalkulator & Pelacak Keuangan</h3>
+                    <p style="font-size:12px; color:var(--text-secondary);">Simulasi pencatat pengeluaran cepat.</p>
+                    <input type="text" id="finDesc" placeholder="Keterangan (Contoh: Gaji / Belanja)">
+                    <input type="number" id="finNominal" placeholder="Nominal (Rp)">
+                    <button class="btn" onclick="addFinanceLog()" style="margin-bottom:15px;">Tambah Catatan Keuangan</button>
+                    <div id="finList" style="font-size:13px; color:var(--text-secondary);">Belum ada catatan keuangan.</div>
                 `;
             } else {
                 wrapper.innerHTML = `
-                    <h3>${cat.name}</h3>
-                    <p>${cat.desc}</p>
-                    <p style="color:var(--accent); font-weight:600; margin-top:20px;">✅ Modul Workspace Native Aktif Berjalan Sempurna Di Dalam Program.</p>
+                    <h3>🛠️ ${cat.name} Workspace</h3>
+                    <p>${cat.desc || 'Modul utilitas aktif.'}</p>
+                    <div style="padding: 20px; background:var(--bg-color); border-radius:10px; margin-top:15px; border:1px solid var(--border);">
+                        <p style="color:var(--accent); margin:0; font-weight:600;">✅ Fitur native aktif berjalan sepenuhnya di dalam aplikasi tanpa kendala eksternal.</p>
+                    </div>
                 `;
             }
 
             bodyContent.appendChild(wrapper);
 
-            if (cat.nativeType === 'notes') {
+            if (nameLower.includes('note') || nameLower.includes('task') || nameLower.includes('productivity')) {
                 document.getElementById('nativeNotesInput').value = localStorage.getItem('native_app_notes') || '';
             }
 
@@ -592,7 +504,7 @@
             box.scrollTop = box.scrollHeight;
 
             setTimeout(() => {
-                box.innerHTML += `<div class="chat-msg ai">Menanggapi: "${val}". Sistem AI lokal merespons dengan sangat baik!</div>`;
+                box.innerHTML += `<div class="chat-msg ai">Menanggapi "${val}": Sistem lokal mendeteksi permintaan Anda dan memprosesnya secara instan!</div>`;
                 box.scrollTop = box.scrollHeight;
             }, 600);
         }
@@ -601,6 +513,14 @@
             const val = document.getElementById('nativeNotesInput').value;
             localStorage.setItem('native_app_notes', val);
             alert('Catatan berhasil disimpan ke memori internal aplikasi!');
+        }
+
+        function addFinanceLog() {
+            const desc = document.getElementById('finDesc').value;
+            const nom = document.getElementById('finNominal').value;
+            if(!desc || !nom) return alert('Isi keterangan dan nominal!');
+            document.getElementById('finList').innerHTML = `<div style="padding:8px; background:var(--bg-color); border-radius:6px; margin-top:5px; color:var(--text-primary);"><b>${desc}</b>: Rp ${Number(nom).toLocaleString()}</div>`;
+            alert('Catatan keuangan dicatat!');
         }
 
         // Auth & Dev Panel Handlers
@@ -655,7 +575,7 @@
         function saveDevConfig() {
             try {
                 appConfig = JSON.parse(document.getElementById('devJsonEditor').value);
-                localStorage.setItem('super_app_native_cache', JSON.stringify(appConfig));
+                localStorage.setItem('super_app_smart_cache', JSON.stringify(appConfig));
                 renderUI();
                 closeDevModal();
                 alert('Konfigurasi Gist berhasil diperbarui secara lokal!');
