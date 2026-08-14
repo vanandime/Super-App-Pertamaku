@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Core OS - Super App Hub v7.0</title>
+    <title>Nexus Core OS - Super App Hub v8.0</title>
     <style>
         :root {
-            --bg-deep: #030712;
-            --bg-surface: #0f172a;
-            --bg-card: #1e293b;
-            --bg-hover: #334155;
+            --bg-deep: #020617;
+            --bg-surface: #090d16;
+            --bg-card: #111827;
+            --bg-hover: #1f2937;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --accent: #6366f1;
-            --accent-glow: rgba(99, 102, 241, 0.4);
-            --border: #334155;
+            --accent-glow: rgba(99, 102, 241, 0.5);
+            --border: #1e293b;
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
@@ -29,16 +29,16 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-image: radial-gradient(circle at top right, rgba(99, 102, 241, 0.12), transparent 40%),
-                              radial-gradient(circle at bottom left, rgba(168, 85, 247, 0.1), transparent 40%);
+            background-image: radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.15), transparent 45%),
+                              radial-gradient(circle at 90% 90%, rgba(168, 85, 247, 0.12), transparent 45%);
         }
 
         .os-container {
             width: 100%; max-width: 480px; height: 100vh; height: 100dvh;
             max-height: 920px; background: var(--bg-surface);
-            border: 1px solid var(--border); border-radius: 28px;
+            border: 1px solid var(--border); border-radius: 32px;
             display: flex; flex-direction: column; overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 30px rgba(99, 102, 241, 0.1);
             position: relative;
         }
 
@@ -48,23 +48,23 @@
 
         /* Header */
         .os-header {
-            padding: 18px 24px; background: var(--bg-card);
+            padding: 20px 24px; background: var(--bg-card);
             border-bottom: 1px solid var(--border);
             display: flex; justify-content: space-between; align-items: center;
-            flex-shrink: 0;
+            flex-shrink: 0; backdrop-filter: blur(10px);
         }
-        .os-brand h1 { font-size: 18px; margin: 0; font-weight: 800; letter-spacing: -0.5px; background: linear-gradient(135deg, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .os-brand span { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+        .os-brand h1 { font-size: 19px; margin: 0; font-weight: 800; letter-spacing: -0.5px; background: linear-gradient(135deg, #818cf8, #e879f9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .os-brand span { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
 
         .user-pill {
             display: flex; align-items: center; gap: 10px; background: var(--bg-deep);
-            padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); cursor: pointer;
-            transition: all 0.2s;
+            padding: 6px 14px; border-radius: 24px; border: 1px solid var(--border); cursor: pointer;
+            transition: all 0.25s ease;
         }
-        .user-pill:hover { border-color: var(--accent); }
-        .user-avatar-sm { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; background: var(--accent); }
+        .user-pill:hover { border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
+        .user-avatar-sm { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; background: var(--accent); }
 
-        /* Navigation Views Container */
+        /* Navigation Views */
         .os-body {
             flex: 1; overflow-y: auto; padding: 20px 24px;
             display: flex; flex-direction: column; gap: 20px;
@@ -73,80 +73,84 @@
         .view-section { display: none; flex-direction: column; gap: 16px; animation: fadeIn 0.25s ease; }
         .view-section.active { display: flex; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Search & Filters */
         .search-box { position: relative; }
         .search-input {
-            width: 100%; padding: 12px 16px 12px 42px; background: var(--bg-card);
-            border: 1px solid var(--border); border-radius: 14px; color: var(--text-main);
-            font-size: 14px; outline: none; transition: all 0.2s;
+            width: 100%; padding: 14px 16px 14px 44px; background: var(--bg-card);
+            border: 1px solid var(--border); border-radius: 16px; color: var(--text-main);
+            font-size: 14px; outline: none; transition: all 0.25s;
         }
-        .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
-        .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; fill: var(--text-muted); }
+        .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-glow); }
+        .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; fill: var(--text-muted); }
 
         .category-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
         .category-scroll::-webkit-scrollbar { display: none; }
         .cat-pill {
             background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);
-            padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.2s;
+            padding: 8px 16px; border-radius: 22px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.2s;
         }
-        .cat-pill.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 4px 12px var(--accent-glow); }
+        .cat-pill.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 4px 15px var(--accent-glow); }
 
         /* Module Cards */
         .module-list { display: flex; flex-direction: column; gap: 12px; }
         .module-card {
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
-            padding: 16px; display: flex; align-items: center; justify-content: space-between;
-            cursor: pointer; transition: all 0.2s;
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 18px;
+            padding: 16px 18px; display: flex; align-items: center; justify-content: space-between;
+            cursor: pointer; transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .module-card:hover { background: var(--bg-hover); transform: translateY(-2px); border-color: var(--accent); }
-        .mod-left { display: flex; align-items: center; gap: 14px; }
+        .module-card:hover { background: var(--bg-hover); transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.4); }
+        .mod-left { display: flex; align-items: center; gap: 16px; }
         .mod-icon {
-            width: 44px; height: 44px; background: rgba(99, 102, 241, 0.1); border-radius: 12px;
-            display: flex; align-items: center; justify-content: center; fill: var(--accent); font-size: 20px;
+            width: 48px; height: 48px; background: rgba(99, 102, 241, 0.12); border-radius: 14px;
+            display: flex; align-items: center; justify-content: center; fill: var(--accent); font-size: 22px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
         }
-        .mod-info h4 { margin: 0 0 4px 0; font-size: 15px; font-weight: 700; }
-        .mod-info p { margin: 0; font-size: 12px; color: var(--text-muted); }
+        .mod-info h4 { margin: 0 0 4px 0; font-size: 15px; font-weight: 700; letter-spacing: -0.2px; }
+        .mod-info p { margin: 0; font-size: 12px; color: var(--text-muted); line-height: 1.4; }
 
         /* Buttons & Forms */
         .btn {
-            background: var(--accent); color: #fff; border: none; padding: 10px 18px;
-            border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer;
-            transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            box-shadow: 0 4px 12px var(--accent-glow);
+            background: var(--accent); color: #fff; border: none; padding: 12px 20px;
+            border-radius: 14px; font-size: 13px; font-weight: 700; cursor: pointer;
+            transition: all 0.25s; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            box-shadow: 0 6px 20px var(--accent-glow);
         }
-        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn:hover { opacity: 0.92; transform: translateY(-2px); box-shadow: 0 8px 25px var(--accent-glow); }
         .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); box-shadow: none; }
-        .btn-outline:hover { background: var(--bg-hover); }
-        .btn-danger { background: var(--danger); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); }
+        .btn-outline:hover { background: var(--bg-hover); border-color: var(--text-muted); }
+        .btn-danger { background: var(--danger); box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4); }
 
         .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
         .form-group label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
         .form-control {
-            width: 100%; padding: 12px 14px; background: var(--bg-deep); border: 1px solid var(--border);
-            border-radius: 12px; color: var(--text-main); font-size: 14px; outline: none;
+            width: 100%; padding: 12px 16px; background: var(--bg-deep); border: 1px solid var(--border);
+            border-radius: 14px; color: var(--text-main); font-size: 14px; outline: none; transition: all 0.2s;
         }
-        .form-control:focus { border-color: var(--accent); }
+        .form-control:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
 
-        /* Locked Fixed Bottom Navigation */
+        /* Fixed Bottom Navigation */
         .os-nav {
-            background: var(--bg-card); border-top: 1px solid var(--border);
-            padding: 12px 24px; display: flex; justify-content: space-around; align-items: center;
+            background: rgba(17, 24, 39, 0.85); backdrop-filter: blur(12px);
+            border-top: 1px solid var(--border); padding: 12px 20px;
+            display: flex; justify-content: space-around; align-items: center;
             flex-shrink: 0; z-index: 50;
         }
         .nav-item {
             display: flex; flex-direction: column; align-items: center; gap: 4px;
-            background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 10px; font-weight: 600; transition: color 0.2s;
+            background: none; border: none; color: var(--text-muted); cursor: pointer;
+            font-size: 10px; font-weight: 600; transition: all 0.2s; padding: 4px 12px; border-radius: 12px;
         }
-        .nav-item svg { width: 22px; height: 22px; fill: currentColor; }
-        .nav-item.active { color: var(--accent); }
+        .nav-item svg { width: 22px; height: 22px; fill: currentColor; transition: transform 0.2s; }
+        .nav-item.active { color: var(--accent); background: rgba(99, 102, 241, 0.08); }
+        .nav-item.active svg { transform: scale(1.1); }
 
         /* Workspace Overlay Screen */
         .workspace-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-surface); z-index: 100; display: none; flex-direction: column;
-            animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .workspace-screen.active { display: flex; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
@@ -159,19 +163,21 @@
 
         /* Profile Banner */
         .profile-banner {
-            background: linear-gradient(135deg, var(--accent), #9333ea); padding: 24px 20px;
-            border-radius: 20px; text-align: center; position: relative; margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--accent), #9333ea); padding: 28px 20px;
+            border-radius: 22px; text-align: center; position: relative; margin-bottom: 10px;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
         }
         .profile-avatar-lg {
-            width: 76px; height: 76px; border-radius: 50%; border: 3px solid var(--bg-surface);
-            object-fit: cover; background: var(--bg-card); margin: 0 auto 10px auto; display: block;
+            width: 82px; height: 82px; border-radius: 50%; border: 4px solid var(--bg-surface);
+            object-fit: cover; background: var(--bg-card); margin: 0 auto 12px auto; display: block;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
         }
-        .profile-stats { display: flex; justify-content: center; gap: 20px; margin-top: 12px; font-size: 13px; color: rgba(255,255,255,0.9); }
-        .profile-stats div b { display: block; font-size: 16px; color: #fff; }
+        .profile-stats { display: flex; justify-content: center; gap: 24px; margin-top: 14px; font-size: 13px; color: rgba(255,255,255,0.95); }
+        .profile-stats div b { display: block; font-size: 17px; color: #fff; }
 
-        .admin-badge { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; }
+        .admin-badge { background: rgba(245, 158, 11, 0.2); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.4); padding: 5px 12px; border-radius: 10px; font-size: 11px; font-weight: 800; letter-spacing: 0.5px; }
         .status-indicator { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px var(--success); }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 10px var(--success); }
     </style>
 </head>
 <body>
@@ -181,7 +187,7 @@
         <div class="os-header">
             <div class="os-brand">
                 <h1 id="osTitle">Nexus Core OS</h1>
-                <span id="osSubtitle">Enterprise v7.0</span>
+                <span id="osSubtitle">Elite Edition v8.0</span>
             </div>
             <div class="user-pill" onclick="switchView('profileView')">
                 <img id="headerUserAvatar" class="user-avatar-sm" src="https://api.dicebear.com/7.x/bottts/svg?seed=guest" alt="Avatar">
@@ -212,20 +218,20 @@
                     <!-- Dynamic Modules Rendered Here -->
                 </div>
 
-                <div style="margin-top: auto; padding-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="margin-top: auto; padding-top: 15px; display: flex; justify-content: space-between; align-items: center;">
                     <div class="status-indicator">
                         <span class="dot" id="syncDot"></span>
                         <span id="syncStatusText">Gist Edge Synced</span>
                     </div>
-                    <span id="activeUserRoleBadge" style="font-size: 11px; color: var(--text-muted);">Role: Tamu</span>
+                    <span id="activeUserRoleBadge" style="font-size: 11px; color: var(--text-muted); font-weight: 600;">Role: Tamu</span>
                 </div>
             </div>
 
             <!-- VIEW 2: SOCIAL / COMMUNITY FEED -->
             <div id="socialView" class="view-section">
-                <h3 style="margin: 0; font-size: 16px;">Nexus Community Stream</h3>
+                <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Nexus Community Stream</h3>
                 <div class="form-group">
-                    <textarea id="postContentInput" class="form-control" placeholder="Bagikan sesuatu ke jaringan Nexus..." style="height: 80px; resize: none;"></textarea>
+                    <textarea id="postContentInput" class="form-control" placeholder="Bagikan pemikiran atau proyek ke jaringan Nexus..." style="height: 90px; resize: none;"></textarea>
                     <button class="btn" onclick="createPost()" style="margin-top: 8px;">Kirim Postingan</button>
                 </div>
                 <div id="feedContainer" style="display: flex; flex-direction: column; gap: 12px;">
@@ -243,10 +249,10 @@
             <!-- VIEW 4: ADMIN / DEV COMMAND CENTER -->
             <div id="adminView" class="view-section">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h3 style="margin: 0; font-size: 16px;">Admin Command Center</h3>
+                    <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Admin Command Center</h3>
                     <span class="admin-badge">ROOT ACCESS</span>
                 </div>
-                <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Kontrol penuh konfigurasi aplikasi, manajemen database pengguna, dan injeksi Gist langsung dari core OS.</p>
+                <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Kontrol penuh konfigurasi sistem, database pengguna, dan injeksi Gist langsung dari core OS.</p>
                 
                 <div class="form-group" style="margin-top: 10px;">
                     <label>Live Gist JSON Config Editor</label>
@@ -256,7 +262,7 @@
 
                 <div class="form-group">
                     <label>Manajemen Pengguna Terdaftar</label>
-                    <div id="adminUserList" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 10px; max-height: 140px; overflow-y: auto; font-size: 12px;">
+                    <div id="adminUserList" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 12px; max-height: 140px; overflow-y: auto; font-size: 12px;">
                         <!-- User list -->
                     </div>
                 </div>
@@ -287,7 +293,7 @@
         <!-- In-App Interactive Workspace Screen -->
         <div class="workspace-screen" id="workspaceScreen">
             <div class="ws-header">
-                <h3 id="wsTitle" style="margin: 0; font-size: 16px;">Workspace</h3>
+                <h3 id="wsTitle" style="margin: 0; font-size: 16px; font-weight: 700;">Workspace</h3>
                 <button class="btn btn-outline" style="padding: 6px 12px; font-size: 12px;" onclick="closeWorkspace()">Tutup ✕</button>
             </div>
             <div class="ws-body" id="wsBodyContent">
@@ -300,14 +306,25 @@
     <script>
         const configUrl = 'https://gist.githubusercontent.com/vanandime/0c17195c5071e6db97540e40e304ad33/raw/config.json';
         
-        // Persistent App State & Secure Local Database Initialization
+        // Robust State & Bulletproof User Database Initialization with Forced Admin Seeding
+        let defaultAdmin = { username: 'admin', password: 'adminpassword', role: 'Developer', bio: 'Master Root Administrator & Core Architect', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=admin', themeColor: '#6366f1' };
+        
+        let usersDb = JSON.parse(localStorage.getItem('nexus_users_db') || '[]');
+        // Force sync or inject default admin to guarantee login access
+        const adminIdx = usersDb.findIndex(x => x.username === 'admin');
+        if (adminIdx === -1) {
+            usersDb.unshift(defaultAdmin);
+        } else {
+            usersDb[adminIdx].password = 'adminpassword'; // ensure password is always valid
+            usersDb[adminIdx].role = 'Developer';
+        }
+        localStorage.setItem('nexus_users_db', JSON.stringify(usersDb));
+
         let appState = {
             currentUser: JSON.parse(localStorage.getItem('nexus_current_session') || 'null'),
-            users: JSON.parse(localStorage.getItem('nexus_users_db') || JSON.stringify([
-                { username: 'admin', password: 'adminpassword', role: 'Developer', bio: 'Master Administrator & Core Architect', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=admin', themeColor: '#6366f1' }
-            ])),
+            users: usersDb,
             posts: JSON.parse(localStorage.getItem('nexus_posts') || JSON.stringify([
-                { id: 1, author: 'admin', text: 'Selamat datang di Nexus Core OS v7.0! Seluruh bug persistensi dan kendali admin telah disempurnakan.', time: 'Baru saja', likes: 7 }
+                { id: 1, author: 'admin', text: 'Selamat datang di Nexus Core OS v8.0! Sistem login admin kini diproteksi dengan auto-sync.', time: 'Baru saja', likes: 12 }
             ])),
             config: {
                 appName: "Nexus Core OS",
@@ -339,13 +356,11 @@
                 document.getElementById('syncStatusText').innerText = 'Offline Mode (Local Cache)';
             }
             
-            // Load local saved config override if exists
             const savedConfig = localStorage.getItem('nexus_config_override');
             if(savedConfig) {
                 try { appState.config = JSON.parse(savedConfig); } catch(err){}
             }
 
-            // Apply theme & session state immediately
             if (appState.currentUser && appState.currentUser.themeColor) {
                 document.documentElement.style.setProperty('--accent', appState.currentUser.themeColor);
             }
@@ -427,7 +442,7 @@
                     <div class="mod-left">
                         <div class="mod-icon">${mod.icon || '📌'}</div>
                         <div class="mod-info">
-                            <h4>${mod.name} ${mod.badge ? `<span style="font-size:9px; background:var(--accent); color:#fff; padding:2px 6px; border-radius:6px; margin-left:6px;">${mod.badge}</span>`:''}</h4>
+                            <h4>${mod.name} ${mod.badge ? `<span style="font-size:9px; background:var(--accent); color:#fff; padding:3px 8px; border-radius:6px; margin-left:6px; font-weight:700;">${mod.badge}</span>`:''}</h4>
                             <p>${mod.desc}</p>
                         </div>
                     </div>
@@ -457,8 +472,8 @@
 
             if(mod.type === 'ai') {
                 wrapper.innerHTML = `
-                    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:15px; height: 320px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;" id="aiChatBox">
-                        <div style="background:var(--bg-hover); padding:10px 14px; border-radius:10px; font-size:13px; max-width:85%;">Halo! Saya Nexus Neural AI siap membantu analisis atau pemrograman Anda.</div>
+                    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:16px; padding:15px; height: 320px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;" id="aiChatBox">
+                        <div style="background:var(--bg-hover); padding:10px 14px; border-radius:12px; font-size:13px; max-width:85%;">Halo! Saya Nexus Neural AI siap membantu Anda. Ada yang bisa didiskusikan hari ini?</div>
                     </div>
                     <div style="display:flex; gap:8px;">
                         <input type="text" id="aiInput" class="form-control" placeholder="Ketik perintah AI..." onkeypress="if(event.key==='Enter') sendAIChat()">
@@ -469,26 +484,26 @@
                 wrapper.innerHTML = `
                     <div class="form-group">
                         <label>Catatan Pintar & Task Manager</label>
-                        <textarea id="osNotesArea" class="form-control" style="height:200px;" placeholder="Tulis catatan di sini..."></textarea>
+                        <textarea id="osNotesArea" class="form-control" style="height:200px;" placeholder="Tulis catatan atau target tugas di sini..."></textarea>
                         <button class="btn" onclick="saveOSNotes()" style="margin-top:8px;">Simpan ke Cloud Storage</button>
                     </div>
                 `;
             } else if(mod.type === 'finance') {
                 wrapper.innerHTML = `
-                    <div style="background:var(--bg-card); padding:16px; border-radius:14px; border:1px solid var(--border);">
-                        <h4 style="margin:0 0 10px 0; color:var(--success);">Saldo Utama: Rp 12.500.000</h4>
-                        <div class="form-group"><label>Keterangan Transaksi</label><input type="text" id="finDesc" class="form-control" placeholder="Contoh: Klien Web App"></div>
-                        <div class="form-group"><label>Nominal (IDR)</label><input type="number" id="finNom" class="form-control" placeholder="500000"></div>
+                    <div style="background:var(--bg-card); padding:16px; border-radius:16px; border:1px solid var(--border);">
+                        <h4 style="margin:0 0 10px 0; color:var(--success);">Saldo Utama: Rp 15.000.000</h4>
+                        <div class="form-group"><label>Keterangan Transaksi</label><input type="text" id="finDesc" class="form-control" placeholder="Contoh: Pendapatan Klien"></div>
+                        <div class="form-group"><label>Nominal (IDR)</label><input type="number" id="finNom" class="form-control" placeholder="750000"></div>
                         <button class="btn" onclick="addLedgerEntry()">Catat Transaksi</button>
                     </div>
                     <div id="ledgerLog" style="font-size:12px; color:var(--text-muted);">Belum ada mutasi baru hari ini.</div>
                 `;
             } else {
                 wrapper.innerHTML = `
-                    <div style="background:var(--bg-card); padding:20px; border-radius:14px; text-align:center;">
+                    <div style="background:var(--bg-card); padding:24px; border-radius:18px; text-align:center; border:1px solid var(--border);">
                         <h3>${mod.name} Workspace</h3>
-                        <p style="color:var(--text-muted);">${mod.desc}</p>
-                        <div style="padding:15px; background:var(--bg-deep); border-radius:10px; margin-top:15px; color:var(--success); font-weight:600;">Modul aktif dan berjalan secara mandiri di dalam sistem Core OS.</div>
+                        <p style="color:var(--text-muted); font-size:13px;">${mod.desc}</p>
+                        <div style="padding:15px; background:var(--bg-deep); border-radius:12px; margin-top:15px; color:var(--success); font-weight:600; font-size:13px;">Modul aktif dan berjalan secara mandiri di dalam sistem Core OS.</div>
                     </div>
                 `;
             }
@@ -511,12 +526,12 @@
             const val = input.value.trim();
             if(!val) return;
 
-            box.innerHTML += `<div style="background:var(--accent); color:#fff; padding:10px 14px; border-radius:10px; font-size:13px; max-width:85%; align-self:flex-end;">${val}</div>`;
+            box.innerHTML += `<div style="background:var(--accent); color:#fff; padding:10px 14px; border-radius:12px; font-size:13px; max-width:85%; align-self:flex-end; font-weight:500;">${val}</div>`;
             input.value = '';
             box.scrollTop = box.scrollHeight;
 
             setTimeout(() => {
-                box.innerHTML += `<div style="background:var(--bg-hover); padding:10px 14px; border-radius:10px; font-size:13px; max-width:85%;">Neural AI memproses: "${val}". Sistem merespons dengan optimal!</div>`;
+                box.innerHTML += `<div style="background:var(--bg-hover); padding:10px 14px; border-radius:12px; font-size:13px; max-width:85%;">Neural AI memproses: "${val}". Sistem merespons dengan optimal!</div>`;
                 box.scrollTop = box.scrollHeight;
             }, 600);
         }
@@ -531,7 +546,7 @@
             const desc = document.getElementById('finDesc').value;
             const nom = document.getElementById('finNom').value;
             if(!desc || !nom) return alert('Lengkapi data transaksi!');
-            document.getElementById('ledgerLog').innerHTML = `<div style="background:var(--bg-card); padding:8px 12px; border-radius:8px; margin-top:5px; color:var(--text-main);"><b>+ Rp ${Number(nom).toLocaleString()}</b> (${desc})</div>`;
+            document.getElementById('ledgerLog').innerHTML = `<div style="background:var(--bg-card); padding:10px 14px; border-radius:10px; margin-top:5px; color:var(--text-main); border:1px solid var(--border);"><b>+ Rp ${Number(nom).toLocaleString()}</b> (${desc})</div>`;
             alert('Transaksi berhasil dicatat ke Ledger!');
         }
 
@@ -543,15 +558,15 @@
                 const item = document.createElement('div');
                 item.style.background = 'var(--bg-card)';
                 item.style.border = '1px solid var(--border)';
-                item.style.borderRadius = '14px';
-                item.style.padding = '14px';
+                item.style.borderRadius = '16px';
+                item.style.padding = '16px';
                 item.innerHTML = `
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                         <b style="font-size:13px; color:var(--accent);">@${post.author}</b>
-                        <span style="font-size:10px; color:var(--text-muted);">${post.time}</span>
+                        <span style="font-size:11px; color:var(--text-muted);">${post.time}</span>
                     </div>
-                    <p style="margin:0 0 10px 0; font-size:13px;">${post.text}</p>
-                    <button class="btn btn-outline" style="padding:4px 10px; font-size:11px;" onclick="likePost(${post.id})">❤️ Suka (${post.likes})</button>
+                    <p style="margin:0 0 12px 0; font-size:13px; line-height:1.4;">${post.text}</p>
+                    <button class="btn btn-outline" style="padding:6px 12px; font-size:11px;" onclick="likePost(${post.id})">❤️ Suka (${post.likes})</button>
                 `;
                 container.appendChild(item);
             });
@@ -586,12 +601,12 @@
 
             if(!user) {
                 container.innerHTML = `
-                    <div class="workspace-card" style="background:var(--bg-card); border:1px solid var(--border); border-radius:18px; padding:20px;">
-                        <h3 style="margin-top:0;">Autentikasi & Registrasi Nexus</h3>
-                        <p style="font-size:12px; color:var(--text-muted);">Daftar atau masuk akun untuk membuka fitur sosial dan personalisasi penuh.</p>
+                    <div class="workspace-card" style="background:var(--bg-card); border:1px solid var(--border); border-radius:20px; padding:22px;">
+                        <h3 style="margin-top:0; font-size:18px;">Autentikasi & Registrasi Nexus</h3>
+                        <p style="font-size:12px; color:var(--text-muted); line-height:1.4;">Gunakan akun <b>admin</b> (Password: <b>adminpassword</b>) untuk akses penuh pengembang/developer, atau buat akun baru.</p>
                         <div class="form-group"><label>Username</label><input type="text" id="regUser" class="form-control" placeholder="Nama pengguna..."></div>
                         <div class="form-group"><label>Password</label><input type="password" id="regPass" class="form-control" placeholder="Kata sandi..."></div>
-                        <div style="display:flex; gap:10px; margin-top:10px;">
+                        <div style="display:flex; gap:10px; margin-top:12px;">
                             <button class="btn" style="flex:1;" onclick="handleRegister()">Daftar Akun</button>
                             <button class="btn btn-outline" style="flex:1;" onclick="handleLogin()">Masuk</button>
                         </div>
@@ -602,15 +617,15 @@
                     <div class="profile-banner">
                         <img class="profile-avatar-lg" src="${user.avatar}" alt="Avatar">
                         <h2 style="margin:0; font-size:18px;">@${user.username}</h2>
-                        <span style="font-size:11px; background:rgba(0,0,0,0.3); padding:3px 10px; border-radius:10px;">${user.role}</span>
+                        <span style="font-size:11px; background:rgba(0,0,0,0.35); padding:4px 12px; border-radius:12px; font-weight:700;">${user.role}</span>
                         <div class="profile-stats">
                             <div><b>12</b> Postingan</div>
-                            <div><b>48</b> Pengikut</div>
-                            <div><b>24</b> Mengikuti</div>
+                            <div><b>54</b> Pengikut</div>
+                            <div><b>28</b> Mengikuti</div>
                         </div>
                     </div>
-                    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:14px;">
-                        <h4 style="margin:0; font-size:14px;">Personalisasi & Keamanan Akun</h4>
+                    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:18px; padding:18px; display:flex; flex-direction:column; gap:14px;">
+                        <h4 style="margin:0; font-size:14px; font-weight:700;">Personalisasi & Keamanan Akun</h4>
                         
                         <div class="form-group">
                             <label>Bio Singkat</label>
@@ -624,12 +639,12 @@
 
                         <div class="form-group">
                             <label>Warna Tema UI (Accent Color)</label>
-                            <input type="color" id="editColor" value="${user.themeColor || '#6366f1'}" style="width:100%; height:40px; background:none; border:none; cursor:pointer; border-radius:8px;">
+                            <input type="color" id="editColor" value="${user.themeColor || '#6366f1'}" style="width:100%; height:42px; background:none; border:none; cursor:pointer; border-radius:10px;">
                         </div>
 
                         <div class="form-group">
                             <label>Ubah Kata Sandi Baru (Keamanan)</label>
-                            <input type="password" id="newPass" class="form-control" placeholder="Kata sandi baru...">
+                            <input type="password" id="newPass" class="form-control" placeholder="Kosongkan jika tidak diubah...">
                         </div>
 
                         <button class="btn" onclick="saveProfileChanges()">Simpan Perubahan & Tema</button>
@@ -677,16 +692,7 @@
             const found = existingUsers.find(x => x.username === u && x.password === p);
             
             if(!found) {
-                // Fallback check for default admin if database was empty/cleared
-                if(u === 'admin' && p === 'adminpassword') {
-                    const defaultAdmin = { username: 'admin', password: 'adminpassword', role: 'Developer', bio: 'Master Admin', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=admin', themeColor: '#6366f1' };
-                    appState.currentUser = defaultAdmin;
-                    localStorage.setItem('nexus_current_session', JSON.stringify(defaultAdmin));
-                    initOS();
-                    alert('Berhasil masuk sebagai Admin utama!');
-                    return;
-                }
-                return alert('Gagal masuk! Username atau password salah.');
+                return alert('Gagal masuk! Username atau password salah. Untuk akses admin gunakan username: admin, password: adminpassword');
             }
 
             appState.currentUser = found;
@@ -699,7 +705,7 @@
         function handleLogout() {
             appState.currentUser = null;
             localStorage.removeItem('nexus_current_session');
-            document.documentElement.style.setProperty('--accent', '#6366f1'); // reset to default
+            document.documentElement.style.setProperty('--accent', '#6366f1');
             initOS();
             alert('Berhasil keluar akun.');
         }
@@ -717,7 +723,6 @@
             appState.currentUser.themeColor = newColor;
             if(newPass) appState.currentUser.password = newPass;
 
-            // Update in global users database array
             let existingUsers = JSON.parse(localStorage.getItem('nexus_users_db') || '[]');
             const idx = existingUsers.findIndex(x => x.username === appState.currentUser.username);
             if(idx !== -1) {
@@ -746,9 +751,9 @@
                 row.style.display = 'flex';
                 row.style.justifyContent = 'space-between';
                 row.style.alignItems = 'center';
-                row.style.padding = '6px 0';
+                row.style.padding = '8px 0';
                 row.style.borderBottom = '1px solid var(--border)';
-                row.innerHTML = `<span><b>@${u.username}</b> (${u.role})</span> <span style="color:var(--text-muted); font-size:10px;">Pass: ${u.password}</span>`;
+                row.innerHTML = `<span><b>@${u.username}</b> (${u.role})</span> <span style="color:var(--text-muted); font-size:11px;">Pass: ${u.password}</span>`;
                 listEl.appendChild(row);
             });
 
