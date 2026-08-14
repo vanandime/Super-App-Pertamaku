@@ -3,111 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Nexus Core OS v10.0</title>
+    <meta name="theme-color" content="#030712">
+    <title>Nexus Core OS v11.0</title>
+    <!-- PWA Web App Manifest Inline -->
+    <link rel="manifest" href="data:application/manifest+json,{
+        'name':'Nexus Core OS',
+        'short_name':'NexusOS',
+        'start_url':'.',
+        'display':'standalone',
+        'background_color':'#030712',
+        'theme_color':'#6366f1',
+        'icons':[{'src':'https://api.dicebear.com/7.x/bottts/svg?seed=nexus','sizes':'512x512','type':'image/svg+xml'}]
+    }">
     <style>
         :root {
-            --bg-deep: #020617;
-            --bg-surface: #090d16;
-            --bg-card: #111827;
-            --bg-hover: #1f2937;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent: #6366f1;
-            --accent-glow: rgba(99, 102, 241, 0.4);
-            --border: #1e293b;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
+            --bg-deep: #030712; --bg-surface: #090d16; --bg-card: #111827; --bg-hover: #1f2937;
+            --text-main: #f8fafc; --text-muted: #94a3b8; --accent: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.4); --border: #1e293b; --success: #10b981; --danger: #ef4444; --warning: #f59e0b;
         }
-
-        /* Theme Presets */
         [data-theme="emerald"] { --accent: #10b981; --accent-glow: rgba(16, 185, 129, 0.4); }
         [data-theme="sunset"] { --accent: #f43f5e; --accent-glow: rgba(244, 63, 94, 0.4); }
         [data-theme="obsidian"] { --accent: #38bdf8; --accent-glow: rgba(56, 189, 248, 0.4); --bg-deep: #000; --bg-surface: #09090b; --bg-card: #121214; }
 
         * { box-sizing: border-box; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
-        body {
-            margin: 0; padding: 0;
-            background-color: var(--bg-deep);
-            color: var(--text-main);
-            min-height: 100vh; min-height: 100dvh;
-            display: flex; justify-content: center; align-items: center;
-        }
+        body { margin: 0; padding: 0; background: var(--bg-deep); color: var(--text-main); min-height: 100vh; min-height: 100dvh; display: flex; justify-content: center; align-items: center; }
 
         .os-container {
             width: 100%; max-width: 480px; height: 100vh; height: 100dvh;
             background: var(--bg-surface); border: 1px solid var(--border);
-            border-radius: 0; display: flex; flex-direction: column; overflow: hidden;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.8); position: relative;
+            display: flex; flex-direction: column; overflow: hidden; position: relative;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
         }
-        @media (min-width: 500px) {
-            .os-container { height: 92vh; border-radius: 32px; }
-        }
+        @media (min-width: 500px) { .os-container { height: 92vh; border-radius: 32px; } }
 
-        /* Header */
-        .os-header {
-            padding: 16px 20px; background: var(--bg-card);
-            border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
+        /* Loading Illusion Overlay */
+        #loaderOverlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(3, 7, 18, 0.85); backdrop-filter: blur(6px); z-index: 999;
+            display: none; justify-content: center; align-items: center; flex-direction: column; gap: 12px;
+            transition: opacity 0.2s ease;
         }
+        .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.6s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .os-header { padding: 16px 20px; background: var(--bg-card); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
         .os-brand h1 { font-size: 17px; margin: 0; font-weight: 800; background: linear-gradient(135deg, var(--accent), #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .os-brand span { font-size: 10px; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px; }
 
-        .user-pill {
-            display: flex; align-items: center; gap: 8px; background: var(--bg-deep);
-            padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border); cursor: pointer; transition: 0.2s;
-        }
+        .user-pill { display: flex; align-items: center; gap: 8px; background: var(--bg-deep); padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border); cursor: pointer; transition: 0.2s; }
         .user-pill:hover { border-color: var(--accent); }
         .user-avatar-sm { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; background: var(--accent); }
 
-        /* Body Views */
-        .os-body {
-            flex: 1; overflow-y: auto; padding: 16px 20px;
-            display: flex; flex-direction: column; gap: 16px;
-            padding-bottom: 20px;
-        }
+        .os-body { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 16px; padding-bottom: 24px; }
         .view-section { display: none; flex-direction: column; gap: 14px; animation: fadeIn 0.2s ease; }
         .view-section.active { display: flex; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Search & Filters */
         .search-box { position: relative; }
-        .search-input {
-            width: 100%; padding: 12px 14px 12px 40px; background: var(--bg-card);
-            border: 1px solid var(--border); border-radius: 14px; color: var(--text-main); font-size: 13px; outline: none;
-        }
+        .search-input { width: 100%; padding: 12px 14px 12px 40px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; color: var(--text-main); font-size: 13px; outline: none; }
         .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
         .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; fill: var(--text-muted); }
 
         .category-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
         .category-scroll::-webkit-scrollbar { display: none; }
-        .cat-pill {
-            background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);
-            padding: 6px 12px; border-radius: 18px; font-size: 11px; font-weight: 600; cursor: pointer; white-space: nowrap;
-        }
+        .cat-pill { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); padding: 6px 12px; border-radius: 18px; font-size: 11px; font-weight: 600; cursor: pointer; white-space: nowrap; }
         .cat-pill.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 4px 12px var(--accent-glow); }
 
-        /* Module Cards */
         .module-list { display: flex; flex-direction: column; gap: 10px; }
-        .module-card {
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
-            padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: 0.2s;
-        }
+        .module-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: 0.2s; }
         .module-card:hover { background: var(--bg-hover); border-color: var(--accent); transform: translateY(-2px); }
         .mod-left { display: flex; align-items: center; gap: 14px; }
-        .mod-icon {
-            width: 42px; height: 42px; background: rgba(99, 102, 241, 0.1); border-radius: 12px;
-            display: flex; align-items: center; justify-content: center; fill: var(--accent); font-size: 20px; border: 1px solid var(--border);
-        }
+        .mod-icon { width: 42px; height: 42px; background: rgba(99, 102, 241, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; fill: var(--accent); font-size: 20px; border: 1px solid var(--border); }
         .mod-info h4 { margin: 0 0 2px 0; font-size: 14px; font-weight: 700; }
         .mod-info p { margin: 0; font-size: 11px; color: var(--text-muted); }
 
-        /* Buttons & Forms */
-        .btn {
-            background: var(--accent); color: #fff; border: none; padding: 10px 16px;
-            border-radius: 12px; font-size: 12px; font-weight: 700; cursor: pointer;
-            display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 14px var(--accent-glow);
-        }
+        .btn { background: var(--accent); color: #fff; border: none; padding: 10px 16px; border-radius: 12px; font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 14px var(--accent-glow); }
         .btn:hover { opacity: 0.9; }
         .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); box-shadow: none; }
         .btn-outline:hover { background: var(--bg-hover); }
@@ -115,50 +85,23 @@
 
         .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
         .form-group label { font-size: 11px; font-weight: 600; color: var(--text-muted); }
-        .form-control, .form-select {
-            width: 100%; padding: 10px 12px; background: var(--bg-deep); border: 1px solid var(--border);
-            border-radius: 10px; color: var(--text-main); font-size: 13px; outline: none;
-        }
+        .form-control, .form-select { width: 100%; padding: 10px 12px; background: var(--bg-deep); border: 1px solid var(--border); border-radius: 10px; color: var(--text-main); font-size: 13px; outline: none; }
         .form-control:focus, .form-select:focus { border-color: var(--accent); }
 
-        /* Fixed Bottom Navigation - Safe from system overlap */
-        .os-nav {
-            background: var(--bg-card); border-top: 1px solid var(--border);
-            padding: 10px 16px calc(10px + env(safe-area-inset-bottom)) 16px;
-            display: flex; justify-content: space-around; align-items: center;
-            flex-shrink: 0; z-index: 50;
-        }
-        .nav-item {
-            display: flex; flex-direction: column; align-items: center; gap: 3px;
-            background: none; border: none; color: var(--text-muted); cursor: pointer;
-            font-size: 9px; font-weight: 600; padding: 4px 8px; border-radius: 10px; transition: 0.2s;
-        }
+        .os-nav { background: var(--bg-card); border-top: 1px solid var(--border); padding: 10px 16px calc(10px + env(safe-area-inset-bottom)) 16px; display: flex; justify-content: space-around; align-items: center; flex-shrink: 0; z-index: 50; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 9px; font-weight: 600; padding: 4px 8px; border-radius: 10px; transition: 0.2s; }
         .nav-item svg { width: 20px; height: 20px; fill: currentColor; }
         .nav-item.active { color: var(--accent); background: rgba(99, 102, 241, 0.1); }
 
-        /* Workspace Modal */
-        .workspace-screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-surface); z-index: 100; display: none; flex-direction: column;
-            animation: slideUp 0.2s ease;
-        }
+        .workspace-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-surface); z-index: 100; display: none; flex-direction: column; animation: slideUp 0.2s ease; }
         .workspace-screen.active { display: flex; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-        .ws-header {
-            padding: 16px 20px; background: var(--bg-card); border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
-        }
+        .ws-header { padding: 16px 20px; background: var(--bg-card); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
         .ws-body { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
 
-        .profile-banner {
-            background: linear-gradient(135deg, var(--accent), #9333ea); padding: 22px 16px;
-            border-radius: 18px; text-align: center; margin-bottom: 6px; box-shadow: 0 8px 20px var(--accent-glow);
-        }
-        .profile-avatar-lg {
-            width: 70px; height: 70px; border-radius: 50%; border: 3px solid var(--bg-surface);
-            object-fit: cover; background: var(--bg-card); margin: 0 auto 8px auto; display: block;
-        }
+        .profile-banner { background: linear-gradient(135deg, var(--accent), #9333ea); padding: 22px 16px; border-radius: 18px; text-align: center; margin-bottom: 6px; box-shadow: 0 8px 20px var(--accent-glow); }
+        .profile-avatar-lg { width: 70px; height: 70px; border-radius: 50%; border: 3px solid var(--bg-surface); object-fit: cover; background: var(--bg-card); margin: 0 auto 8px auto; display: block; }
         .profile-stats { display: flex; justify-content: center; gap: 18px; margin-top: 10px; font-size: 12px; color: rgba(255,255,255,0.9); }
         .profile-stats div b { display: block; font-size: 15px; color: #fff; }
         .admin-badge { background: rgba(245, 158, 11, 0.2); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.4); padding: 3px 10px; border-radius: 8px; font-size: 10px; font-weight: 800; }
@@ -167,11 +110,17 @@
 <body data-theme="midnight">
 
     <div class="os-container">
+        <!-- Loading Illusion Overlay -->
+        <div id="loaderOverlay">
+            <div class="spinner"></div>
+            <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Memproses sistem...</span>
+        </div>
+
         <!-- Header -->
         <div class="os-header">
             <div class="os-brand">
                 <h1 id="brandTitle">Nexus Core OS</h1>
-                <span id="brandSub">v10.0 ULTIMATE</span>
+                <span id="brandSub">v11.0 PRO</span>
             </div>
             <div class="user-pill" onclick="switchView('profileView')">
                 <img id="headerUserAvatar" class="user-avatar-sm" src="https://api.dicebear.com/7.x/bottts/svg?seed=guest" alt="Avatar">
@@ -182,19 +131,19 @@
         <!-- Body Views -->
         <div class="os-body">
             <!-- DASHBOARD -->
-            <div id="dashboardView" class="view-section active">
+            <div id="dashboardView" class="view-section">
                 <div class="search-box">
                     <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                    <input type="text" id="searchInput" class="search-input" placeholder="Cari modul atau alat sistem..." oninput="renderModules()">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Cari modul sistem..." oninput="renderModules()">
                 </div>
 
                 <div class="category-scroll">
-                    <button class="cat-pill active" onclick="filterCategory('all', this)" id="pillAll">Semua</button>
-                    <button class="cat-pill" onclick="filterCategory('ai', this)" id="pillAi">AI Neural</button>
-                    <button class="cat-pill" onclick="filterCategory('social', this)" id="pillSoc">Social</button>
-                    <button class="cat-pill" onclick="filterCategory('productivity', this)" id="pillProd">Productivity</button>
-                    <button class="cat-pill" onclick="filterCategory('finance', this)" id="pillFin">Finance</button>
-                    <button class="cat-pill" onclick="filterCategory('tools', this)" id="pillTools">Tools</button>
+                    <button class="cat-pill active" onclick="filterCategory('all', this)">Semua</button>
+                    <button class="cat-pill" onclick="filterCategory('ai', this)">AI Neural</button>
+                    <button class="cat-pill" onclick="filterCategory('social', this)">Social</button>
+                    <button class="cat-pill" onclick="filterCategory('productivity', this)">Productivity</button>
+                    <button class="cat-pill" onclick="filterCategory('finance', this)">Finance</button>
+                    <button class="cat-pill" onclick="filterCategory('tools', this)">Tools</button>
                 </div>
 
                 <div class="module-list" id="moduleContainer"></div>
@@ -202,7 +151,7 @@
                 <div style="margin-top: auto; padding-top: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 11px;">
                     <div style="display:flex; align-items:center; gap:6px; color:var(--text-muted);">
                         <span style="width:7px; height:7px; background:var(--success); border-radius:50%; display:inline-block;"></span>
-                        <span id="syncText">Edge Synced</span>
+                        <span>Edge Synced</span>
                     </div>
                     <span id="roleText" style="color:var(--text-muted);">Role: Tamu</span>
                 </div>
@@ -210,15 +159,15 @@
 
             <!-- COMMUNITY FEED -->
             <div id="socialView" class="view-section">
-                <h3 style="margin: 0; font-size: 15px;" id="commTitle">Community Stream</h3>
+                <h3 style="margin: 0; font-size: 15px;">Community Stream</h3>
                 <div class="form-group">
                     <textarea id="postContentInput" class="form-control" placeholder="Bagikan ide atau pemikiran..." style="height: 75px; resize: none;"></textarea>
-                    <button class="btn" onclick="createPost()" style="margin-top: 6px;" id="postBtn">Kirim Postingan</button>
+                    <button class="btn" onclick="withLoading(createPost)" style="margin-top: 6px;">Kirim Postingan</button>
                 </div>
                 <div id="feedContainer" style="display: flex; flex-direction: column; gap: 10px;"></div>
             </div>
 
-            <!-- PROFILE & SETTINGS (Language, Theme, Security) -->
+            <!-- PROFILE & SETTINGS -->
             <div id="profileView" class="view-section">
                 <div id="profileCardContent"></div>
             </div>
@@ -229,38 +178,44 @@
                     <h3 style="margin: 0; font-size: 15px;">Admin Control Center</h3>
                     <span class="admin-badge">ROOT</span>
                 </div>
-                <p style="font-size: 11px; color: var(--text-muted); margin: 0;" id="adminDesc">Kendali penuh sistem dan manajemen akun terdaftar.</p>
+                <p style="font-size: 11px; color: var(--text-muted); margin: 0;">Kelola modul global, konfigurasi API AI, dan akun user terdaftar.</p>
                 
                 <div class="form-group" style="margin-top: 6px;">
-                    <label>Gist JSON Editor</label>
-                    <textarea id="adminJsonEditor" class="form-control" style="height: 120px; font-family: monospace; font-size: 11px;"></textarea>
-                    <button class="btn" onclick="saveAdminConfig()" style="margin-top: 6px;">Simpan Gist Config</button>
+                    <label>Konfigurasi API AI (Endpoint / Key)</label>
+                    <input type="text" id="adminApiKey" class="form-control" placeholder="Masukkan API Key OpenAI/Custom...">
+                    <button class="btn" onclick="withLoading(saveAdminApiKey)" style="margin-top: 4px; font-size:11px;">Simpan API Key</button>
                 </div>
 
                 <div class="form-group">
-                    <label>Manajemen User Terdaftar (Hapus / Ubah Role)</label>
-                    <div id="adminUserList" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 8px; max-height: 140px; overflow-y: auto; font-size: 11px;"></div>
+                    <label>Gist JSON Editor Modul</label>
+                    <textarea id="adminJsonEditor" class="form-control" style="height: 100px; font-family: monospace; font-size: 11px;"></textarea>
+                    <button class="btn" onclick="withLoading(saveAdminConfig)" style="margin-top: 4px; font-size:11px;">Simpan Modul Global</button>
+                </div>
+
+                <div class="form-group">
+                    <label>Manajemen User Terdaftar</label>
+                    <div id="adminUserList" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 8px; max-height: 120px; overflow-y: auto; font-size: 11px;"></div>
                 </div>
             </div>
         </div>
 
-        <!-- Fixed Bottom Navigation (Optimized & Protected) -->
+        <!-- Fixed Bottom Navigation -->
         <div class="os-nav">
-            <button class="nav-item active" onclick="switchNav('dashboardView', this)">
+            <button class="nav-item active" onclick="withLoading(() => switchNav('dashboardView', this))">
                 <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
-                <span id="navDash">Dashboard</span>
+                <span>Dashboard</span>
             </button>
-            <button class="nav-item" onclick="switchNav('socialView', this)">
+            <button class="nav-item" onclick="withLoading(() => switchNav('socialView', this))">
                 <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-                <span id="navComm">Community</span>
+                <span>Community</span>
             </button>
-            <button class="nav-item" onclick="switchNav('profileView', this)">
+            <button class="nav-item" onclick="withLoading(() => switchNav('profileView', this))">
                 <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
-                <span id="navProf">Profile</span>
+                <span>Profile</span>
             </button>
-            <button class="nav-item" id="adminNavBtn" style="display: none;" onclick="switchNav('adminView', this)">
+            <button class="nav-item" id="adminNavBtn" style="display: none;" onclick="withLoading(() => switchNav('adminView', this))">
                 <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.47l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c-.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.47l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-                <span id="navAdmin">Admin</span>
+                <span>Admin</span>
             </button>
         </div>
 
@@ -287,34 +242,40 @@
         let appState = {
             currentUser: JSON.parse(localStorage.getItem('nexus_current_session') || 'null'),
             users: usersDb,
+            following: JSON.parse(localStorage.getItem('nexus_following') || '[]'),
             posts: JSON.parse(localStorage.getItem('nexus_posts') || JSON.stringify([
-                { id: 1, author: 'admin', text: 'Nexus Core OS v10.0 dengan fitur kontrol user, multi-tema, dan bahasa aktif!', time: 'Baru saja', likes: 20 }
+                { id: 1, author: 'admin', text: 'Nexus Core OS v11.0 online dengan persistensi panel & follow system aktif!', time: 'Baru saja', likes: 24 }
             ])),
             config: {
                 appName: "Nexus Core OS",
                 categories: [
-                    { id: "mod-ai-1", name: "Nexus Neural AI", type: "ai", icon: "🤖", badge: "PRO", desc: "Asisten kecerdasan buatan terlatih." },
-                    { id: "mod-soc-1", name: "Community Stream", type: "social", icon: "💬", badge: "LIVE", desc: "Media sosial internal jaringan." },
-                    { id: "mod-prod-1", name: "Cloud Tasks & Notes", type: "productivity", icon: "⚡", badge: "SYNC", desc: "Manajemen tugas dan catatan." },
-                    { id: "mod-fin-1", name: "Wealth Ledger", type: "finance", icon: "💳", badge: "SECURE", desc: "Pencatat keuangan digital." },
-                    { id: "mod-dev-1", name: "Dev Studio IDE", type: "tools", icon: "🛠️", badge: "DEV", desc: "Perkakas editor dan utilitas." }
-                ]
+                    { id: "mod-ai-1", name: "Nexus Neural AI", type: "ai", icon: "🤖", badge: "PRO", desc: "Asisten AI cerdas dengan pengaturan API kustom." },
+                    { id: "mod-soc-1", name: "Community Stream", type: "social", icon: "💬", badge: "LIVE", desc: "Feed sosial dengan fitur ikuti pengguna." },
+                    { id: "mod-prod-1", name: "Cloud Tasks & Notes", type: "productivity", icon: "⚡", badge: "SYNC", desc: "Manajemen catatan dan tugas tersinkron." },
+                    { id: "mod-fin-1", name: "Wealth Ledger", type: "finance", icon: "💳", badge: "SECURE", desc: "Pencatat keuangan digital mutakhir." },
+                    { id: "mod-dev-1", name: "Dev Studio IDE", type: "tools", icon: "🛠️", badge: "DEV", desc: "Perkakas pengembang dan editor skrip." }
+                ],
+                apiSettings: { aiKey: localStorage.getItem('nexus_admin_apikey') || '' }
             }
         };
 
-        const i18n = {
-            id: { dash: "Dashboard", comm: "Community", prof: "Profile & Settings", admin: "Admin", sync: "Edge Synced", role: "Role", search: "Cari modul..." },
-            en: { dash: "Dashboard", comm: "Community", prof: "Profile & Settings", admin: "Admin", sync: "Edge Synced", role: "Role", search: "Search module..." }
-        };
-
         let currentCategoryFilter = 'all';
+
+        function withLoading(action) {
+            const loader = document.getElementById('loaderOverlay');
+            loader.style.display = 'flex';
+            setTimeout(() => {
+                action();
+                loader.style.display = 'none';
+            }, 350);
+        }
 
         async function initOS() {
             try {
                 const res = await fetch(configUrl);
                 if(res.ok) {
                     const remoteConfig = await res.json();
-                    if(remoteConfig && remoteConfig.categories) appState.config = remoteConfig;
+                    if(remoteConfig && remoteConfig.categories) appState.config.categories = remoteConfig.categories;
                 }
             } catch(e) {}
             
@@ -327,6 +288,14 @@
             renderFeed();
             renderProfileView();
             renderAdminUserList();
+
+            // Restore active view state without shifting
+            const lastView = localStorage.getItem('nexus_active_view') || 'dashboardView';
+            const navIndex = lastView === 'dashboardView' ? 0 : lastView === 'socialView' ? 1 : 2;
+            const navButtons = document.querySelectorAll('.os-nav .nav-item');
+            if(navButtons[navIndex]) {
+                switchNav(lastView, navButtons[navIndex]);
+            }
         }
 
         function applyUserSettings() {
@@ -340,38 +309,41 @@
             const user = appState.currentUser;
             const avatarSm = document.getElementById('headerUserAvatar');
             const nameSm = document.getElementById('headerUserName');
-            const roleBadge = document.getElementById('activeUserRoleBadge');
+            const roleText = document.getElementById('roleText');
             const adminNav = document.getElementById('adminNavBtn');
 
             if(user) {
                 avatarSm.src = user.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.username}`;
                 nameSm.innerText = user.username;
+                roleText.innerText = `Role: ${user.role}`;
                 if(adminNav) adminNav.style.display = (user.role === 'Developer') ? 'flex' : 'none';
             } else {
                 avatarSm.src = 'https://api.dicebear.com/7.x/bottts/svg?seed=guest';
                 nameSm.innerText = 'Tamu';
+                roleText.innerText = 'Role: Tamu';
                 if(adminNav) adminNav.style.display = 'none';
             }
         }
 
         function switchView(viewId) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
-            if(viewId === 'profileView') {
-                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-                document.querySelectorAll('.nav-item')[2].classList.add('active');
-            }
+            const target = document.getElementById(viewId);
+            if(target) target.classList.add('active');
+            localStorage.setItem('nexus_active_view', viewId);
         }
 
         function switchNav(viewId, btnEl) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
+            const target = document.getElementById(viewId);
+            if(target) target.classList.add('active');
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            btnEl.classList.add('active');
+            if(btnEl) btnEl.classList.add('active');
+            localStorage.setItem('nexus_active_view', viewId);
         }
 
         function renderModules() {
             const container = document.getElementById('moduleContainer');
+            if(!container) return;
             container.innerHTML = '';
             const query = document.getElementById('searchInput').value.toLowerCase();
             const categories = appState.config.categories || [];
@@ -390,7 +362,7 @@
             filtered.forEach(mod => {
                 const card = document.createElement('div');
                 card.className = 'module-card';
-                card.onclick = () => openWorkspace(mod);
+                card.onclick = () => withLoading(() => openWorkspace(mod));
                 card.innerHTML = `
                     <div class="mod-left">
                         <div class="mod-icon">${mod.icon || '📌'}</div>
@@ -423,8 +395,10 @@
             wrapper.style.gap = '10px';
 
             if(mod.type === 'ai') {
+                const apiKeyStatus = appState.config.apiSettings?.aiKey ? '🔑 API Key Aktif (Custom)' : '⚙️ Menggunakan Default Neural Engine';
                 wrapper.innerHTML = `
-                    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:12px; height: 260px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;" id="aiChatBox">
+                    <div style="font-size:11px; color:var(--success); font-weight:600;">${apiKeyStatus}</div>
+                    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:12px; height: 240px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;" id="aiChatBox">
                         <div style="background:var(--bg-hover); padding:8px 12px; border-radius:8px; font-size:12px; max-width:85%;">Halo! Neural AI siap membantu Anda.</div>
                     </div>
                     <div style="display:flex; gap:6px;">
@@ -443,9 +417,9 @@
             } else if(mod.type === 'finance') {
                 wrapper.innerHTML = `
                     <div style="background:var(--bg-card); padding:14px; border-radius:12px; border:1px solid var(--border);">
-                        <h4 style="margin:0 0 8px 0; color:var(--success); font-size:13px;">Saldo: Rp 25.000.000</h4>
+                        <h4 style="margin:0 0 8px 0; color:var(--success); font-size:13px;">Saldo: Rp 35.000.000</h4>
                         <div class="form-group"><label>Keterangan</label><input type="text" id="finDesc" class="form-control" placeholder="Transaksi..."></div>
-                        <div class="form-group"><label>Nominal (IDR)</label><input type="number" id="finNom" class="form-control" placeholder="500000"></div>
+                        <div class="form-group"><label>Nominal (IDR)</label><input type="number" id="finNom" class="form-control" placeholder="750000"></div>
                         <button class="btn" onclick="addLedgerEntry()">Catat</button>
                     </div>
                     <div id="ledgerLog" style="font-size:11px; color:var(--text-muted);">Belum ada mutasi.</div>
@@ -477,7 +451,7 @@
             input.value = '';
             box.scrollTop = box.scrollHeight;
             setTimeout(() => {
-                box.innerHTML += `<div style="background:var(--bg-hover); padding:8px 12px; border-radius:8px; font-size:12px; max-width:85%;">Neural AI memproses: "${val}". Selesai!</div>`;
+                box.innerHTML += `<div style="background:var(--bg-hover); padding:8px 12px; border-radius:8px; font-size:12px; max-width:85%;">Neural AI merespons permintaan: "${val}". Sukses!</div>`;
                 box.scrollTop = box.scrollHeight;
             }, 500);
         }
@@ -497,8 +471,11 @@
 
         function renderFeed() {
             const container = document.getElementById('feedContainer');
+            if(!container) return;
             container.innerHTML = '';
             appState.posts.forEach(post => {
+                const isFollowing = appState.following.includes(post.author);
+                const isSelf = appState.currentUser && appState.currentUser.username === post.author;
                 const item = document.createElement('div');
                 item.style.background = 'var(--bg-card)';
                 item.style.border = '1px solid var(--border)';
@@ -506,7 +483,10 @@
                 item.style.padding = '12px';
                 item.innerHTML = `
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                        <b style="font-size:12px; color:var(--accent);">@${post.author}</b>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <b style="font-size:12px; color:var(--accent);">@${post.author}</b>
+                            ${!isSelf ? `<button class="btn btn-outline" style="padding:2px 6px; font-size:9px;" onclick="toggleFollow('${post.author}')">${isFollowing ? 'Diikuti ✓' : '+ Ikuti'}</button>` : ''}
+                        </div>
                         <span style="font-size:10px; color:var(--text-muted);">${post.time}</span>
                     </div>
                     <p style="margin:0 0 8px 0; font-size:12px;">${post.text}</p>
@@ -514,6 +494,16 @@
                 `;
                 container.appendChild(item);
             });
+        }
+
+        function toggleFollow(username) {
+            if(appState.following.includes(username)) {
+                appState.following = appState.following.filter(u => u !== username);
+            } else {
+                appState.following.push(username);
+            }
+            localStorage.setItem('nexus_following', JSON.stringify(appState.following));
+            renderFeed();
         }
 
         function createPost() {
@@ -533,6 +523,7 @@
 
         function renderProfileView() {
             const container = document.getElementById('profileCardContent');
+            if(!container) return;
             const user = appState.currentUser;
 
             if(!user) {
@@ -543,8 +534,8 @@
                         <div class="form-group"><label>Username</label><input type="text" id="regUser" class="form-control" placeholder="Username..."></div>
                         <div class="form-group"><label>Password</label><input type="password" id="regPass" class="form-control" placeholder="Password..."></div>
                         <div style="display:flex; gap:8px; margin-top:8px;">
-                            <button class="btn" style="flex:1;" onclick="handleRegister()">Daftar</button>
-                            <button class="btn btn-outline" style="flex:1;" onclick="handleLogin()">Masuk</button>
+                            <button class="btn" style="flex:1;" onclick="withLoading(handleRegister)">Daftar</button>
+                            <button class="btn btn-outline" style="flex:1;" onclick="withLoading(handleLogin)">Masuk</button>
                         </div>
                     </div>
                 `;
@@ -555,8 +546,8 @@
                         <h2 style="margin:0; font-size:16px;">@${user.username}</h2>
                         <span style="font-size:10px; background:rgba(0,0,0,0.3); padding:2px 8px; border-radius:8px; font-weight:700;">${user.role}</span>
                         <div class="profile-stats">
-                            <div><b>12</b> Post</div>
-                            <div><b>48</b> Followers</div>
+                            <div><b>${appState.following.length}</b> Mengikuti</div>
+                            <div><b>15</b> Pengikut</div>
                         </div>
                     </div>
                     <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:14px; display:flex; flex-direction:column; gap:10px;">
@@ -566,21 +557,15 @@
                         <div class="form-group">
                             <label>Tema Preset</label>
                             <select id="editThemePreset" class="form-select">
-                                <option value="midnight" ${user.themePreset==='midnight'?'selected':''}>Cyber Midnight (Default)</option>
+                                <option value="midnight" ${user.themePreset==='midnight'?'selected':''}>Cyber Midnight</option>
                                 <option value="emerald" ${user.themePreset==='emerald'?'selected':''}>Emerald Matrix</option>
                                 <option value="sunset" ${user.themePreset==='sunset'?'selected':''}>Neon Sunset</option>
                                 <option value="obsidian" ${user.themePreset==='obsidian'?'selected':''}>Obsidian Dark</option>
                             </select>
                         </div>
-                        <div class="form-group"><label>Warna Aksen Kustom</label><input type="color" id="editColor" value="${user.themeColor || '#6366f1'}" style="width:100%; height:36px; background:none; border:none; cursor:pointer; border-radius:8px;"></div>
-                        <div class="form-group"><label>Bahasa / Language</label>
-                            <select id="editLang" class="form-select">
-                                <option value="id" ${user.lang==='id'?'selected':''}>Bahasa Indonesia</option>
-                                <option value="en" ${user.lang==='en'?'selected':''}>English</option>
-                            </select>
-                        </div>
-                        <button class="btn" onclick="saveProfileChanges()">Simpan Pengaturan</button>
-                        <button class="btn btn-danger" onclick="handleLogout()">Keluar</button>
+                        <div class="form-group"><label>Warna Aksen</label><input type="color" id="editColor" value="${user.themeColor || '#6366f1'}" style="width:100%; height:36px; background:none; border:none; cursor:pointer; border-radius:8px;"></div>
+                        <button class="btn" onclick="withLoading(saveProfileChanges)">Simpan Pengaturan</button>
+                        <button class="btn btn-danger" onclick="withLoading(handleLogout)">Keluar</button>
                     </div>
                 `;
             }
@@ -627,7 +612,6 @@
             appState.currentUser.avatar = document.getElementById('editAvatar').value;
             appState.currentUser.themePreset = document.getElementById('editThemePreset').value;
             appState.currentUser.themeColor = document.getElementById('editColor').value;
-            appState.currentUser.lang = document.getElementById('editLang').value;
 
             let db = JSON.parse(localStorage.getItem('nexus_users_db') || '[]');
             const idx = db.findIndex(x => x.username === appState.currentUser.username);
@@ -650,7 +634,10 @@
                 listEl.appendChild(row);
             });
             const jsonEditor = document.getElementById('adminJsonEditor');
-            if(jsonEditor && !jsonEditor.value) jsonEditor.value = JSON.stringify(appState.config, null, 2);
+            if(jsonEditor && !jsonEditor.value) jsonEditor.value = JSON.stringify(appState.config.categories, null, 2);
+            
+            const apiKeyInput = document.getElementById('adminApiKey');
+            if(apiKeyInput && !apiKeyInput.value) apiKeyInput.value = appState.config.apiSettings?.aiKey || '';
         }
 
         function adminDeleteUser(uname) {
@@ -662,13 +649,21 @@
             alert('User dihapus.');
         }
 
+        function saveAdminApiKey() {
+            const key = document.getElementById('adminApiKey').value.trim();
+            if(!appState.config.apiSettings) appState.config.apiSettings = {};
+            appState.config.apiSettings.aiKey = key;
+            localStorage.setItem('nexus_admin_apikey', key);
+            alert('API Key AI berhasil diperbarui!');
+        }
+
         function saveAdminConfig() {
             try {
                 const parsed = JSON.parse(document.getElementById('adminJsonEditor').value);
-                appState.config = parsed;
-                localStorage.setItem('nexus_config_override', JSON.stringify(parsed));
+                appState.config.categories = parsed;
+                localStorage.setItem('nexus_config_override', JSON.stringify(appState.config));
                 renderModules();
-                alert('Konfigurasi Gist diperbarui!');
+                alert('Konfigurasi modul global diperbarui!');
             } catch(e) { alert('Format JSON salah!'); }
         }
 
