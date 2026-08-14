@@ -1,270 +1,9 @@
-        <div class="app-wrapper">
-            <!-- Header -->
-            <div class="header">
-                <div class="brand">
-                    <h1 id="app-title">Super App Hub</h1>
-                    <span id="user-role-badge">Tamu / Pengunjung</span>
-                </div>
-                <div class="user-menu" id="user-menu-container">
-                    <!-- Tombol Auth dinamis -->
-                </div>
-            </div>
-
-            <!-- Category Filter Pills -->
-            <div class="filter-scroll" id="filter-container">
-                <div class="filter-pill active" onclick="setCategoryFilter('all')">Semua</div>
-                <div class="filter-pill" onclick="setCategoryFilter('ai')">🤖 AI & LLM</div>
-                <div class="filter-pill" onclick="setCategoryFilter('social')">💬 Sosial</div>
-                <div class="filter-pill" onclick="setCategoryFilter('productivity')">⚡ Produktifitas</div>
-                <div class="filter-pill" onclick="setCategoryFilter('finance')">💳 Keuangan</div>
-                <div class="filter-pill" onclick="setCategoryFilter('tools')">🛠️ Tools</div>
-            </div>
-
-            <!-- Search & Controls Row -->
-            <div class="controls-row">
-                <div class="search-box">
-                    <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                    <input type="text" id="searchInput" class="search-input" placeholder="Cari AI, sosial, produktifitas..." oninput="filterCategories()">
-                </div>
-                <button class="btn btn-outline" id="devPanelBtn" style="display:none;" onclick="openDevModal()">⚙️ Dev Panel</button>
-            </div>
-
-            <!-- Category Container -->
-            <div class="container" id="category-container">
-                <div style="padding: 40px; text-align: center; color: var(--text-secondary);">Memuat modul multikategori...</div>
-            </div>
-
-            <div class="status-footer">
-                <span class="status-dot" id="status-dot"></span>
-                <span id="app-status">Menghubungkan ke GitHub Gist...</span>
-            </div>
-        </div>
-
-        <!-- Auth Modal -->
-        <div class="modal" id="authModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(5px); justify-content:center; align-items:center; z-index:1000; padding:20px;">
-            <div class="modal-content" style="background:var(--card-bg); border:1px solid var(--border); width:100%; max-width:400px; padding:25px; border-radius:20px;">
-                <h3 style="margin-top:0; margin-bottom:15px;">Masuk atau Daftar Akun</h3>
-                <div style="margin-bottom: 15px;">
-                    <label style="display:block; font-size:12px; color:var(--text-secondary); margin-bottom:6px;">Username (Ketik 'admin' untuk akses Dev)</label>
-                    <input type="text" id="authUsername" class="search-input" style="padding:10px 14px;" placeholder="Username...">
-                </div>
-                <div style="margin-bottom: 20px;">
-                    <label style="display:block; font-size:12px; color:var(--text-secondary); margin-bottom:6px;">Password</label>
-                    <input type="password" id="authPassword" class="search-input" style="padding:10px 14px;" placeholder="Password...">
-                </div>
-                <div style="display:flex; justify-content:flex-end; gap:10px;">
-                    <button class="btn btn-outline" onclick="closeAuthModal()">Batal</button>
-                    <button class="btn" onclick="handleAuthSubmit()">Masuk / Daftar</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Developer Control Panel Modal -->
-        <div class="modal" id="devModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(5px); justify-content:center; align-items:center; z-index:1000; padding:20px;">
-            <div class="modal-content" style="background:var(--card-bg); border:1px solid var(--border); width:100%; max-width:650px; padding:25px; border-radius:20px;">
-                <h3 style="margin-top:0; margin-bottom:15px;">🛠️ Developer Control Panel (Gist Config Editor)</h3>
-                <div style="margin-bottom: 15px;">
-                    <label style="display:block; font-size:12px; color:var(--text-secondary); margin-bottom:6px;">Edit Konfigurasi Live JSON</label>
-                    <textarea id="devJsonEditor" style="width:100%; height:250px; background:var(--bg-color); border:1px solid var(--border); border-radius:10px; color:var(--text-primary); padding:12px; font-family:monospace; font-size:13px; outline:none; resize:vertical;"></textarea>
-                </div>
-                <div style="display:flex; justify-content:flex-end; gap:10px;">
-                    <button class="btn btn-outline" onclick="closeDevModal()">Tutup</button>
-                    <button class="btn" onclick="saveDevConfig()">Terapkan & Simpan</button>
-                </div>
-            </div>
-        </div>
-
-        <script>
-            const configUrl = 'https://gist.githubusercontent.com/vanandime/0c17195c5071e6db97540e40e304ad33/raw/config.json';
-            let appConfig = null;
-            let currentFilter = 'all';
-            let favorites = JSON.parse(localStorage.getItem('super_app_favs') || '[]');
-            let currentUser = JSON.parse(localStorage.getItem('super_app_user') || 'null');
-
-            // SVG Vector Icon Engine Library
-            const iconLibrary = {
-                ai: '<svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 17.93V17a1 1 0 0 0-2 0v2.93A8.01 8.01 0 0 1 4.07 13H7a1 1 0 0 0 0-2H4.07A8.01 8.01 0 0 1 11 4.07V7a1 1 0 0 0 2 0V4.07A8.01 8.01 0 0 1 19.93 11H17a1 1 0 0 0 0 2h2.93A8.01 8.01 0 0 1 13 19.93z"/></svg>',
-                social: '<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>',
-                productivity: '<svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>',
-                finance: '<svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>',
-                tools: '<svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.5 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>',
-                art: '<svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 20.65c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l2.69-2.69C9.93 19.76 10.93 20 12 20c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 16c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>',
-                education: '<svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>',
-                default: '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>'
-            };
-
-            async function loadSuperApp() {
-                try {
-                    const response = await fetch(configUrl);
-                    if (!response.ok) throw new Error('Gagal mengambil data Gist');
-                    appConfig = await response.json();
-                    
-                    document.getElementById('app-title').innerText = appConfig.appName || 'Super App Hub';
-                    document.getElementById('app-status').innerText = "Sinkronisasi Live Gist Aktif";
-                    document.getElementById('status-dot').style.background = "#22c55e";
-                    
-                    renderUI();
-                    localStorage.setItem('super_app_v4_cache', JSON.stringify(appConfig));
-                } catch (error) {
-                    console.warn('Gagal koneksi live, memuat cache lokal...');
-                    const cached = localStorage.getItem('super_app_v4_cache');
-                    if (cached) {
-                        appConfig = JSON.parse(cached);
-                        document.getElementById('app-title').innerText = (appConfig.appName || 'Super App Hub') + " (Offline)";
-                        document.getElementById('app-status').innerText = "Mode Offline Aktif (Cache)";
-                        document.getElementById('status-dot').style.background = "#eab308";
-                        renderUI();
-                    } else {
-                        document.getElementById('app-status').innerText = "Gagal memuat data sama sekali.";
-                        document.getElementById('status-dot').style.background = "#ef4444";
-                    }
-                }
-                updateUserNavbar();
-            }
-
-            function renderUI() {
-                filterCategories();
-            }
-
-            function setCategoryFilter(categoryType) {
-                currentFilter = categoryType;
-                document.querySelectorAll('.filter-pill').forEach(pill => pill.classList.remove('active'));
-                event.target.classList.add('active');
-                filterCategories();
-            }
-
-            function renderCategories(categories) {
-                const container = document.getElementById('category-container');
-                container.innerHTML = '';
-
-                if (!categories || categories.length === 0) {
-                    container.innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-secondary);">Tidak ada modul ditemukan pada kategori ini.</div>';
-                    return;
-                }
-
-                const sorted = [...categories].sort((a, b) => (favorites.includes(b.id) - favorites.includes(a.id)));
-
-                sorted.forEach(cat => {
-                    const isFav = favorites.includes(cat.id);
-                    const svgIcon = iconLibrary[cat.iconKey] || iconLibrary.default;
-                    const badgeHtml = cat.badge ? `<span class="tag-badge">${cat.badge}</span>` : '';
-                    
-                    const a = document.createElement('a');
-                    a.href = cat.link || '#';
-                    a.className = 'category-item';
-                    a.innerHTML = `
-                        <div class="category-left">
-                            <div class="category-icon">${svgIcon}</div>
-                            <div class="category-info">
-                                <h4>${cat.name} ${badgeHtml}</h4>
-                                <p>${cat.desc || 'Akses cepat modul'}</p>
-                            </div>
-                        </div>
-                        <button class="favorite-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite(event, '${cat.id}')">
-                            ${isFav ? '★' : '☆'}
-                        </button>
-                    `;
-                    container.appendChild(a);
-                });
-            }
-
-            function filterCategories() {
-                if (!appConfig || !appConfig.categories) return;
-                const query = document.getElementById('searchInput').value.toLowerCase();
-                
-                let filtered = appConfig.categories.filter(cat => {
-                    const matchesQuery = cat.name.toLowerCase().includes(query) || (cat.desc && cat.desc.toLowerCase().includes(query));
-                    const matchesType = (currentFilter === 'all') || (cat.type === currentFilter);
-                    return matchesQuery && matchesType;
-                });
-
-                renderCategories(filtered);
-            }
-
-            function toggleFavorite(event, id) {
-                event.preventDefault();
-                if (favorites.includes(id)) {
-                    favorites = favorites.filter(f => f !== id);
-                } else {
-                    favorites.push(id);
-                }
-                localStorage.setItem('super_app_favs', JSON.stringify(favorites));
-                filterCategories();
-            }
-
-            // Auth Handlers
-            function openAuthModal() { document.getElementById('authModal').style.display = 'flex'; }
-            function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
-
-            function handleAuthSubmit() {
-                const user = document.getElementById('authUsername').value.trim();
-                if (!user) return alert('Silakan masukkan username!');
-                
-                const role = (user.toLowerCase() === 'admin' || user.toLowerCase() === 'developer') ? 'Developer' : 'Member';
-                currentUser = { username: user, role: role };
-                localStorage.setItem('super_app_user', JSON.stringify(currentUser));
-                
-                closeAuthModal();
-                updateUserNavbar();
-                alert(`Login Berhasil! Masuk sebagai ${role} (${user})`);
-            }
-
-            function logout() {
-                currentUser = null;
-                localStorage.removeItem('super_app_user');
-                updateUserNavbar();
-            }
-
-            function updateUserNavbar() {
-                const container = document.getElementById('user-menu-container');
-                const badge = document.getElementById('user-role-badge');
-                const devBtn = document.getElementById('devPanelBtn');
-
-                if (currentUser) {
-                    badge.innerText = `${currentUser.role}: ${currentUser.username}`;
-                    container.innerHTML = `<button class="btn btn-outline" onclick="logout()">Keluar</button>`;
-                    if (currentUser.role === 'Developer') {
-                        devBtn.style.display = 'inline-flex';
-                    } else {
-                        devBtn.style.display = 'none';
-                    }
-                } else {
-                    badge.innerText = 'Tamu / Pengunjung';
-                    container.innerHTML = `<button class="btn" onclick="openAuthModal()">Masuk</button>`;
-                    devBtn.style.display = 'none';
-                }
-            }
-
-            // Developer Panel Handlers
-            function openDevModal() {
-                document.getElementById('devJsonEditor').value = JSON.stringify(appConfig, null, 2);
-                document.getElementById('devModal').style.display = 'flex';
-            }
-            function closeDevModal() { document.getElementById('devModal').style.display = 'none'; }
-
-            function saveDevConfig() {
-                try {
-                    const parsed = JSON.parse(document.getElementById('devJsonEditor').value);
-                    appConfig = parsed;
-                    localStorage.setItem('super_app_v4_cache', JSON.stringify(appConfig));
-                    renderUI();
-                    closeDevModal();
-                    alert('Konfigurasi Gist berhasil diperbarui!');
-                } catch (e) {
-                    alert('Format JSON tidak valid! Pastikan sintaksis JSON benar.');
-                }
-            }
-
-            loadSuperApp();
-        </script>
-    </body>
-    </html>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super App Hub - Ultimate Edition</title>
+    <title>Super App Hub - Internal Ecosystem</title>
     <style>
         :root {
             --bg-color: #07090e;
@@ -275,8 +14,6 @@
             --accent: #38bdf8;
             --accent-gradient: linear-gradient(135deg, #38bdf8 0%, #6366f1 100%);
             --border: #1e293b;
-            --badge-ai: rgba(168, 85, 247, 0.15);
-            --badge-ai-text: #c084fc;
         }
 
         * { box-sizing: border-box; }
@@ -296,7 +33,7 @@
             max-width: 650px;
         }
 
-        /* Header & Navbar */
+        /* Header */
         .header {
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -311,12 +48,6 @@
 
         .brand h1 { font-size: 20px; margin: 0; font-weight: 700; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .brand span { font-size: 11px; color: var(--text-secondary); display: block; margin-top: 2px; }
-
-        .user-menu {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
 
         .btn {
             background: var(--accent-gradient);
@@ -334,43 +65,9 @@
             gap: 6px;
         }
         .btn:hover { opacity: 0.9; transform: translateY(-1px); }
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-        }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-primary); }
 
-        /* Category Filter Pills */
-        .filter-scroll {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-            scrollbar-width: none;
-        }
-        .filter-scroll::-webkit-scrollbar { display: none; }
-        
-        .filter-pill {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.2s;
-        }
-        .filter-pill.active {
-            background: var(--accent);
-            color: #07090e;
-            border-color: var(--accent);
-            font-weight: 600;
-        }
-
-        /* Search Bar & Controls */
+        /* Controls & Search */
         .controls-row {
             display: flex;
             gap: 10px;
@@ -391,7 +88,6 @@
             color: var(--text-primary);
             font-size: 14px;
             outline: none;
-            transition: border-color 0.2s;
         }
         .search-input:focus { border-color: var(--accent); }
 
@@ -419,7 +115,7 @@
             align-items: center; 
             justify-content: space-between;
             padding: 16px 20px; 
-            text-decoration: none; 
+            cursor: pointer;
             color: var(--text-primary); 
             border-bottom: 1px solid var(--border); 
             transition: background 0.2s; 
@@ -442,45 +138,183 @@
             justify-content: center;
             border-radius: 12px;
             fill: var(--accent);
-            flex-shrink: 0;
         }
         .category-icon svg { width: 22px; height: 22px; }
 
-        .category-info h4 { margin: 0 0 4px 0; font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .category-info h4 { margin: 0 0 4px 0; font-size: 15px; font-weight: 600; }
         .category-info p { margin: 0; font-size: 12px; color: var(--text-secondary); }
 
-        .tag-badge {
-            font-size: 10px;
-            padding: 2px 8px;
-            border-radius: 6px;
-            background: var(--badge-ai);
-            color: var(--badge-ai-text);
-            font-weight: 500;
+        /* In-App Module Viewer (Fullscreen Overlay di Dalam Program) */
+        .module-viewer {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-color);
+            z-index: 2000;
+            flex-direction: column;
         }
+        .module-viewer.active { display: flex; }
 
-        .favorite-btn {
-            background: none;
+        .viewer-header {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .viewer-title { font-size: 16px; font-weight: 700; margin: 0; }
+        
+        .viewer-body {
+            flex: 1;
+            width: 100%;
+            height: calc(100vh - 65px);
             border: none;
-            cursor: pointer;
-            font-size: 20px;
-            color: var(--text-secondary);
-            transition: color 0.2s;
-            padding: 5px;
+            background: #fff;
         }
-        .favorite-btn.active { color: #facc15; }
 
-        /* Status Footer */
         .status-footer {
             margin-top: 18px;
             text-align: center;
             font-size: 12px;
             color: var(--text-secondary);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 6px;
         }
-        .status-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; display: inline-block; }
     </style>
 </head>
-<body id="app-body">
+<body>
+
+    <div class="app-wrapper">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <h1 id="app-title">Super App Hub</h1>
+                <span>Ecosystem Dalam Program (In-App)</span>
+            </div>
+            <button class="btn" onclick="openDevModal()">⚙️ Dev Panel</button>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="controls-row">
+            <div class="search-box">
+                <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <input type="text" id="searchInput" class="search-input" placeholder="Cari modul di dalam aplikasi..." oninput="filterCategories()">
+            </div>
+        </div>
+
+        <!-- Category Container -->
+        <div class="container" id="category-container">
+            <div style="padding: 40px; text-align: center; color: var(--text-secondary);">Memuat modul...</div>
+        </div>
+
+        <div class="status-footer" id="app-status">Sistem In-App Aktif</div>
+    </div>
+
+    <!-- In-App Module Viewer Overlay -->
+    <div class="module-viewer" id="moduleViewer">
+        <div class="viewer-header">
+            <h3 class="viewer-title" id="viewerTitle">Modul Aktif</h3>
+            <button class="btn btn-outline" onclick="closeModuleViewer()">✕ Tutup / Kembali</button>
+        </div>
+        <iframe class="viewer-body" id="viewerIframe" src=""></iframe>
+    </div>
+
+    <!-- Developer Control Panel Modal -->
+    <div class="modal" id="devModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); backdrop-filter:blur(5px); justify-content:center; align-items:center; z-index:3000; padding:20px;">
+        <div style="background:var(--card-bg); border:1px solid var(--border); width:100%; max-width:600px; padding:25px; border-radius:20px;">
+            <h3>🛠️ Edit Konfigurasi Gist</h3>
+            <textarea id="devJsonEditor" style="width:100%; height:250px; background:var(--bg-color); border:1px solid var(--border); border-radius:10px; color:var(--text-primary); padding:12px; font-family:monospace; font-size:13px; outline:none; resize:vertical;"></textarea>
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:15px;">
+                <button class="btn btn-outline" onclick="closeDevModal()">Tutup</button>
+                <button class="btn" onclick="saveDevConfig()">Simpan Perubahan</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const configUrl = 'https://gist.githubusercontent.com/vanandime/0c17195c5071e6db97540e40e304ad33/raw/config.json';
+        let appConfig = null;
+
+        const iconLibrary = {
+            ai: '<svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 17.93V17a1 1 0 0 0-2 0v2.93A8.01 8.01 0 0 1 4.07 13H7a1 1 0 0 0 0-2H4.07A8.01 8.01 0 0 1 11 4.07V7a1 1 0 0 0 2 0V4.07A8.01 8.01 0 0 1 19.93 11H17a1 1 0 0 0 0 2h2.93A8.01 8.01 0 0 1 13 19.93z"/></svg>',
+            default: '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>'
+        };
+
+        async function loadSuperApp() {
+            try {
+                const response = await fetch(configUrl);
+                if (!response.ok) throw new Error('Gagal mengambil Gist');
+                appConfig = await response.json();
+                renderCategories(appConfig.categories);
+                localStorage.setItem('super_app_inapp_cache', JSON.stringify(appConfig));
+            } catch (e) {
+                const cached = localStorage.getItem('super_app_inapp_cache');
+                if (cached) {
+                    appConfig = JSON.parse(cached);
+                    renderCategories(appConfig.categories);
+                } else {
+                    document.getElementById('category-container').innerHTML = '<div style="padding:30px; text-align:center;">Gagal memuat data.</div>';
+                }
+            }
+        }
+
+        function renderCategories(categories) {
+            const container = document.getElementById('category-container');
+            container.innerHTML = '';
+
+            categories.forEach(cat => {
+                const svgIcon = iconLibrary[cat.iconKey] || iconLibrary.default;
+                const div = document.createElement('div');
+                div.className = 'category-item';
+                div.onclick = () => openModuleInApp(cat.name, cat.link);
+                div.innerHTML = `
+                    <div class="category-left">
+                        <div class="category-icon">${svgIcon}</div>
+                        <div class="category-info">
+                            <h4>${cat.name}</h4>
+                            <p>${cat.desc || 'Buka modul di dalam aplikasi'}</p>
+                        </div>
+                    </div>
+                    <span style="color:var(--accent); font-size:14px; font-weight:600;">Buka ➔</span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function openModuleInApp(name, url) {
+            document.getElementById('viewerTitle').innerText = name;
+            document.getElementById('viewerIframe').src = url;
+            document.getElementById('moduleViewer').classList.add('active');
+        }
+
+        function closeModuleViewer() {
+            document.getElementById('moduleViewer').classList.remove('active');
+            document.getElementById('viewerIframe').src = '';
+        }
+
+        function filterCategories() {
+            if (!appConfig || !appConfig.categories) return;
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = appConfig.categories.filter(c => c.name.toLowerCase().includes(query));
+            renderCategories(filtered);
+        }
+
+        function openDevModal() {
+            document.getElementById('devJsonEditor').value = JSON.stringify(appConfig, null, 2);
+            document.getElementById('devModal').style.display = 'flex';
+        }
+        function closeDevModal() { document.getElementById('devModal').style.display = 'none'; }
+        
+        function saveDevConfig() {
+            try {
+                appConfig = JSON.parse(document.getElementById('devJsonEditor').value);
+                localStorage.setItem('super_app_inapp_cache', JSON.stringify(appConfig));
+                renderCategories(appConfig.categories);
+                closeDevModal();
+                alert('Berhasil diperbarui!');
+            } catch(e) { alert('JSON tidak valid!'); }
+        }
+
+        loadSuperApp();
+    </script>
+</body>
+</html>
