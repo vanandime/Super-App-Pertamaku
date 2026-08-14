@@ -3,121 +3,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All-in-One Super App</title>
+    <title>Super App Hub</title>
     <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --card-hover: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #38bdf8;
+            --border: #334155;
+        }
+
         * { box-sizing: border-box; }
         body { 
             margin: 0; 
             padding: 20px; 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            background-color: #121212; 
-            color: #ffffff; 
-            transition: background-color 0.3s ease;
+            background-color: var(--bg-color); 
+            color: var(--text-primary); 
+            transition: background 0.3s ease;
+            display: flex;
+            justify-content: center;
         }
+
+        .wrapper {
+            width: 100%;
+            max-width: 550px;
+        }
+
         .header {
-            max-width: 600px;
-            margin: 0 auto 20px auto;
-            padding: 10px;
-            border-bottom: 1px solid #333;
+            margin-bottom: 20px;
+            padding: 10px 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        h1 { font-size: 24px; margin: 0 0 5px 0; }
-        #app-status { font-size: 12px; color: #888; margin: 0; }
+
+        h1 { font-size: 22px; margin: 0; font-weight: 700; letter-spacing: -0.5px; }
         
-        .container { 
-            max-width: 600px; 
-            margin: 0 auto; 
-            background: #1e1e1e; 
-            border-radius: 12px; 
-            overflow: hidden; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5); 
+        .status-badge {
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: #1e293b;
+            color: var(--accent);
+            border: 1px solid var(--border);
+            font-weight: 500;
         }
+
+        /* Search Bar */
+        .search-box {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus { border-color: var(--accent); }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        /* Container List */
+        .container { 
+            background: var(--card-bg); 
+            border-radius: 14px; 
+            overflow: hidden; 
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3); 
+        }
+
         .category-item { 
             display: flex; 
             align-items: center; 
-            padding: 15px 20px; 
+            justify-content: space-between;
+            padding: 14px 18px; 
             text-decoration: none; 
-            color: #ffffff; 
-            border-bottom: 1px solid #2a2a2a; 
-            transition: background 0.2s; 
+            color: var(--text-primary); 
+            border-bottom: 1px solid var(--border); 
+            transition: background 0.2s, transform 0.1s; 
         }
+
         .category-item:last-child { border-bottom: none; }
-        .category-item:hover { background: #2c2c2c; }
-        .category-icon { font-size: 20px; margin-right: 15px; width: 30px; text-align: center; }
-        .category-name { font-size: 16px; font-weight: 500; }
+        .category-item:hover { background: var(--card-hover); }
+
+        .category-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .category-icon { 
+            font-size: 22px; 
+            width: 36px; 
+            height: 36px;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+        .category-info h4 { margin: 0 0 3px 0; font-size: 15px; font-weight: 600; }
+        .category-info p { margin: 0; font-size: 12px; color: var(--text-secondary); }
+
+        .favorite-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--text-secondary);
+            transition: color 0.2s;
+        }
+
+        .favorite-btn.active { color: #facc15; }
+
+        .empty-state {
+            padding: 30px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
     </style>
 </head>
 <body id="app-body">
 
-    <div class="header">
-        <h1 id="app-title">Memuat Super App...</h1>
-        <p id="app-status">Menghubungkan ke GitHub Gist...</p>
+    <div class="wrapper">
+        <div class="header">
+            <div>
+                <h1 id="app-title">Super App</h1>
+            </div>
+            <div id="app-status" class="status-badge">Menghubungkan...</div>
+        </div>
+
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" class="search-input" placeholder="Cari kategori atau fitur..." oninput="filterCategories()">
+        </div>
+
+        <div class="container" id="category-container">
+            <div class="empty-state">Memuat data dari GitHub Gist...</div>
+        </div>
     </div>
 
-    <div class="container" id="category-container">
-        <!-- Konten kategori akan dimuat dinamis pada Bagian 2 -->
-    </div>
     <script>
-        // URL RAW Gist bersih tanpa kode commit hash agar selalu real-time
         const configUrl = 'https://gist.githubusercontent.com/vanandime/0c17195c5071e6db97540e40e304ad33/raw/config.json';
+        let allCategories = [];
+        let favorites = JSON.parse(localStorage.getItem('super_app_favs') || '[]');
 
         async function loadSuperApp() {
             try {
                 const response = await fetch(configUrl);
-                if (!response.ok) throw new Error('Gagal mengambil data dari server');
+                if (!response.ok) throw new Error('Gagal terhubung ke server');
                 
                 const config = await response.json();
 
-                // Terapkan data Gist ke elemen UI secara live
-                document.getElementById('app-title').innerText = config.appName || 'All-in-One Super App';
-                document.getElementById('app-body').style.backgroundColor = config.themeColor || '#121212';
-                document.getElementById('app-status').innerText = "Status: Terhubung secara live ke Gist";
-
-                // Render Daftar Kategori secara dinamis
-                const container = document.getElementById('category-container');
-                container.innerHTML = '';
+                document.getElementById('app-title').innerText = config.appName || 'Super App Hub';
+                document.getElementById('app-status').innerText = "🟢 Live Gist Sync";
                 
-                if (config.categories && Array.isArray(config.categories)) {
-                    config.categories.forEach(cat => {
-                        const a = document.createElement('a');
-                        a.href = cat.link || '#';
-                        a.className = 'category-item';
-                        a.innerHTML = `
-                            <span class="category-icon">${cat.icon || '📌'}</span>
-                            <span class="category-name">${cat.name}</span>
-                        `;
-                        container.appendChild(a);
-                    });
+                if (config.themeColor) {
+                    document.documentElement.style.setProperty('--bg-color', config.themeColor);
                 }
 
-                // Simpan snapshot ke LocalStorage untuk fallback offline
-                localStorage.setItem('all_in_one_config', JSON.stringify(config));
+                allCategories = config.categories || [];
+                renderCategories(allCategories);
+
+                localStorage.setItem('super_app_config', JSON.stringify(config));
             } catch (error) {
-                console.warn('Koneksi gagal, beralih ke cache lokal...');
-                const cachedConfig = localStorage.getItem('all_in_one_config');
+                console.warn('Gagal online, menggunakan cache lokal...');
+                const cached = localStorage.getItem('super_app_config');
                 
-                if (cachedConfig) {
-                    const config = JSON.parse(cachedConfig);
-                    document.getElementById('app-title').innerText = (config.appName || 'All-in-One Super App') + " (Mode Offline)";
-                    document.getElementById('app-status').innerText = "Status: Menggunakan data cadangan offline.";
-                    
-                    const container = document.getElementById('category-container');
-                    container.innerHTML = '';
-                    if (config.categories && Array.isArray(config.categories)) {
-                        config.categories.forEach(cat => {
-                            const a = document.createElement('a');
-                            a.href = cat.link || '#';
-                            a.className = 'category-item';
-                            a.innerHTML = `
-                                <span class="category-icon">${cat.icon || '📌'}</span>
-                                <span class="category-name">${cat.name}</span>
-                            `;
-                            container.appendChild(a);
-                        });
-                    }
+                if (cached) {
+                    const config = JSON.parse(cached);
+                    document.getElementById('app-title').innerText = config.appName + " (Offline)";
+                    document.getElementById('app-status').innerText = "🟡 Mode Offline";
+                    allCategories = config.categories || [];
+                    renderCategories(allCategories);
                 } else {
-                    document.getElementById('app-status').innerText = "Gagal memuat konfigurasi. Periksa koneksi Anda.";
+                    document.getElementById('app-status').innerText = "🔴 Gagal Memuat";
+                    document.getElementById('category-container').innerHTML = '<div class="empty-state">Koneksi terputus dan tidak ada data cache.</div>';
                 }
             }
+        }
+
+        function renderCategories(categories) {
+            const container = document.getElementById('category-container');
+            container.innerHTML = '';
+
+            if (categories.length === 0) {
+                container.innerHTML = '<div class="empty-state">Tidak ada kategori ditemukan.</div>';
+                return;
+            }
+
+            // Urutkan agar favorit berada di posisi atas
+            const sorted = [...categories].sort((a, b) => {
+                const aFav = favorites.includes(a.id);
+                const bFav = favorites.includes(b.id);
+                return bFav - aFav;
+            });
+
+            sorted.forEach(cat => {
+                const isFav = favorites.includes(cat.id);
+                const a = document.createElement('a');
+                a.href = cat.link || '#';
+                a.className = 'category-item';
+                a.innerHTML = `
+                    <div class="category-left">
+                        <span class="category-icon">${cat.icon || '📌'}</span>
+                        <div class="category-info">
+                            <h4>${cat.name}</h4>
+                            <p>${cat.desc || 'Akses cepat modul'}</p>
+                        </div>
+                    </div>
+                    <button class="favorite-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite(event, '${cat.id}')">
+                        ${isFav ? '★' : '☆'}
+                    </button>
+                `;
+                container.appendChild(a);
+            });
+        }
+
+        function filterCategories() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allCategories.filter(cat => 
+                cat.name.toLowerCase().includes(query) || 
+                (cat.desc && cat.desc.toLowerCase().includes(query))
+            );
+            renderCategories(filtered);
+        }
+
+        function toggleFavorite(event, id) {
+            event.preventDefault(); // Mencegah link utama terpanggil
+            if (favorites.includes(id)) {
+                favorites = favorites.filter(favId => favId !== id);
+            } else {
+                favorites.push(id);
+            }
+            localStorage.setItem('super_app_favs', JSON.stringify(favorites));
+            filterCategories(); // Render ulang dengan filter pencarian saat ini
         }
 
         loadSuperApp();
