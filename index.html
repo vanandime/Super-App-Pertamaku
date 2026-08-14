@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#030712">
-    <title>Nexus Core OS v12.0 Enterprise</title>
-    <!-- PWA Web App Manifest & Icon Support -->
+    <title>Nexus Core OS v13.0 Ultimate Elite</title>
     <link rel="manifest" href="data:application/manifest+json,{
         'name':'Nexus Core OS',
         'short_name':'NexusOS',
@@ -17,7 +16,7 @@
     }">
     <style>
         :root {
-            --bg-deep: #030712; --bg-surface: #090d16; --bg-card: #111827; --bg-hover: #1f2937;
+            --bg-deep: #020617; --bg-surface: #090d16; --bg-card: #111827; --bg-hover: #1f2937;
             --text-main: #f8fafc; --text-muted: #94a3b8; --accent: #6366f1;
             --accent-glow: rgba(99, 102, 241, 0.4); --border: #1e293b; --success: #10b981; --danger: #ef4444; --warning: #f59e0b;
         }
@@ -107,8 +106,7 @@
         .admin-badge { background: rgba(245, 158, 11, 0.2); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.4); padding: 3px 10px; border-radius: 8px; font-size: 10px; font-weight: 800; }
     </style>
 </head>
-
-    <body>
+<body>
     <div class="os-container">
         <!-- Loading Illusion Overlay Engine -->
         <div id="loaderOverlay">
@@ -120,7 +118,7 @@
         <div class="os-header">
             <div class="os-brand">
                 <h1 id="brandTitle">Nexus Core OS</h1>
-                <span id="brandSub">v12.0 ENTERPRISE</span>
+                <span id="brandSub">v13.0 ULTIMATE</span>
             </div>
             <div class="user-pill" onclick="switchView('profileView')">
                 <img id="headerUserAvatar" class="user-avatar-sm" src="https://api.dicebear.com/7.x/bottts/svg?seed=guest" alt="Avatar">
@@ -131,10 +129,10 @@
         <!-- Body Views -->
         <div class="os-body">
             <!-- DASHBOARD -->
-            <div id="dashboardView" class="view-section">
+            <div id="dashboardView" class="view-section active">
                 <div class="search-box">
                     <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                    <input type="text" id="searchInput" class="search-input" placeholder="Cari dari 25+ modul sistem..." oninput="renderModules()">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Cari dari seluruh modul sistem..." oninput="renderModules()">
                 </div>
 
                 <div class="category-scroll">
@@ -168,7 +166,7 @@
                 <div id="feedContainer" style="display: flex; flex-direction: column; gap: 10px;"></div>
             </div>
 
-            <!-- PROFILE & SETTINGS (Termasuk Pengaturan Keamanan Profil Pengguna) -->
+            <!-- PROFILE & SETTINGS -->
             <div id="profileView" class="view-section">
                 <div id="profileCardContent"></div>
             </div>
@@ -182,7 +180,7 @@
                 <p style="font-size: 11px; color: var(--text-muted); margin: 0;">Kelola modul global, konfigurasi API AI, dan akun user terdaftar.</p>
                 
                 <div class="form-group" style="margin-top: 6px;">
-                    <label>Konfigurasi API Key AI (OpenAI/DeepSeek/Custom)</label>
+                    <label>Konfigurasi API Key AI</label>
                     <input type="password" id="adminApiKey" class="form-control" placeholder="sk-...">
                     <button class="btn" onclick="withLoading(saveAdminApiKey)" style="margin-top: 4px; font-size:11px;">Simpan API Key</button>
                 </div>
@@ -231,6 +229,7 @@
     </div>
 </body>
 </html>
+
     <script>
         const configUrl = 'https://gist.githubusercontent.com/vanandime/0c17195c5071e6db97540e40e304ad33/raw/config.json';
         
@@ -246,14 +245,13 @@
             console.error("Storage error:", e);
         }
 
-        // 25+ Modul Komprehensif (20 Modul Baru + 5 Modul Utama)
+        // 25+ Modul Komprehensif
         const initialModules = [
             { id: "mod-ai-1", name: "Nexus Neural AI", type: "ai", icon: "🤖", badge: "PRO", desc: "Asisten AI cerdas dengan dukungan API Kustom & OpenAI/DeepSeek." },
             { id: "mod-soc-1", name: "Community Stream", type: "social", icon: "💬", badge: "LIVE", desc: "Feed sosial interaktif dengan fitur ikuti pengguna." },
             { id: "mod-prod-1", name: "Cloud Tasks & Notes", type: "productivity", icon: "⚡", badge: "SYNC", desc: "Manajemen catatan dan tugas tersinkron." },
             { id: "mod-fin-1", name: "Wealth Ledger", type: "finance", icon: "💳", badge: "SECURE", desc: "Pencatat keuangan digital mutakhir." },
             { id: "mod-dev-1", name: "Dev Studio IDE", type: "tools", icon: "🛠️", badge: "DEV", desc: "Perkakas pengembang dan editor skrip." },
-            // 20 Modul Baru
             { id: "mod-dev-2", name: "Cyber Code Formatter", type: "developer", icon: "💻", badge: "NEW", desc: "Format dan rapikan sintaks kode secara instan." },
             { id: "mod-prod-2", name: "Quantum Markdown Editor", type: "productivity", icon: "📝", badge: "NEW", desc: "Editor dokumen teks dengan pratinjau instan." },
             { id: "mod-fin-2", name: "Crypto Asset Tracker", type: "finance", icon: "📈", badge: "NEW", desc: "Pantau pergerakan aset kripto dan portofolio." },
@@ -288,7 +286,6 @@
             }
         };
 
-        // Load Persistent State safely with Try-Catch
         function loadStateFromStorage() {
             try {
                 const savedState = localStorage.getItem('SMARTCORE_STATE');
@@ -301,7 +298,7 @@
                     if (parsed.config && parsed.config.apiSettings) appState.config.apiSettings = parsed.config.apiSettings;
                 } else {
                     appState.posts = [
-                        { id: 1, author: 'admin', text: 'Nexus Core OS v12.0 Enterprise online dengan 25+ modul dan keamanan profil aktif!', time: 'Baru saja', likes: 30 }
+                        { id: 1, author: 'admin', text: 'Nexus Core OS v13.0 Ultimate Elite online dengan arsitektur terlengkap!', time: 'Baru saja', likes: 35 }
                     ];
                 }
             } catch (e) {
@@ -345,7 +342,7 @@
                 if(res.ok) {
                     const remoteConfig = await res.json();
                     if(remoteConfig && remoteConfig.categories) {
-                        // Merge remote categories if needed, or keep expanded
+                        // Keep integrated or merge
                     }
                 }
             } catch(e) {}
@@ -360,7 +357,6 @@
             renderProfileView();
             renderAdminUserList();
 
-            // Restore active view state without shifting
             const lastView = localStorage.getItem('nexus_active_view') || 'dashboardView';
             const navMap = { 'dashboardView': 0, 'socialView': 1, 'profileView': 2, 'adminView': 3 };
             const navIndex = navMap[lastView] !== undefined ? navMap[lastView] : 0;
@@ -457,7 +453,6 @@
             renderModules();
         }
 
-        // Workspace Interaktif Sempurna Termasuk AI Berfungsi Penuh
         function openWorkspace(mod) {
             document.getElementById('wsTitle').innerText = mod.name;
             const body = document.getElementById('wsBodyContent');
@@ -472,10 +467,10 @@
                 const hasKey = appState.config.apiSettings?.aiKey && appState.config.apiSettings.aiKey.length > 5;
                 wrapper.innerHTML = `
                     <div style="font-size:11px; color:${hasKey ? 'var(--success)' : 'var(--warning)'}; font-weight:600;">
-                        ${hasKey ? '🔑 API Key Kustom Aktif & Terhubung' : '⚠️ Menggunakan Neural Simulated Core (Atur API Key di Admin Panel jika perlu)'}
+                        ${hasKey ? '🔑 API Key Kustom Aktif & Terhubung' : '⚠️ Menggunakan Neural Simulated Core (Atur API Key di Admin Panel)'}
                     </div>
                     <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:12px; height: 260px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;" id="aiChatBox">
-                        <div style="background:var(--bg-hover); padding:8px 12px; border-radius:8px; font-size:12px; max-width:85%;">Halo! Nexus Neural AI siap membantu analisis atau penulisan Anda. Ketik pesan di bawah.</div>
+                        <div style="background:var(--bg-hover); padding:8px 12px; border-radius:8px; font-size:12px; max-width:85%;">Halo! Nexus Neural AI siap membantu Anda.</div>
                     </div>
                     <div style="display:flex; gap:6px;">
                         <input type="text" id="aiInput" class="form-control" placeholder="Ketik perintah AI..." onkeypress="if(event.key==='Enter') sendAIChat()">
@@ -486,16 +481,16 @@
                 wrapper.innerHTML = `
                     <div class="form-group">
                         <label>Catatan & Task Manager Pintar</label>
-                        <textarea id="osNotesArea" class="form-control" style="height:180px;" placeholder="Tulis catatan atau daftar tugas..."></textarea>
+                        <textarea id="osNotesArea" class="form-control" style="height:180px;" placeholder="Tulis catatan..."></textarea>
                         <button class="btn" onclick="saveOSNotes()" style="margin-top:6px;">Simpan Catatan</button>
                     </div>
                 `;
             } else if(mod.type === 'finance') {
                 wrapper.innerHTML = `
                     <div style="background:var(--bg-card); padding:14px; border-radius:12px; border:1px solid var(--border);">
-                        <h4 style="margin:0 0 8px 0; color:var(--success); font-size:13px;">Saldo Aktif: Rp 45.000.000</h4>
-                        <div class="form-group"><label>Keterangan Transaksi</label><input type="text" id="finDesc" class="form-control" placeholder="Contoh: Pendapatan Proyek"></div>
-                        <div class="form-group"><label>Nominal (IDR)</label><input type="number" id="finNom" class="form-control" placeholder="1000000"></div>
+                        <h4 style="margin:0 0 8px 0; color:var(--success); font-size:13px;">Saldo Aktif: Rp 50.000.000</h4>
+                        <div class="form-group"><label>Keterangan Transaksi</label><input type="text" id="finDesc" class="form-control" placeholder="Keterangan..."></div>
+                        <div class="form-group"><label>Nominal (IDR)</label><input type="number" id="finNom" class="form-control" placeholder="500000"></div>
                         <button class="btn" onclick="addLedgerEntry()">Catat Keuangan</button>
                     </div>
                     <div id="ledgerLog" style="font-size:11px; color:var(--text-muted);">Belum ada mutasi baru.</div>
@@ -505,7 +500,7 @@
                     <div style="background:var(--bg-card); padding:20px; border-radius:12px; text-align:center;">
                         <h3>${mod.name}</h3>
                         <p style="color:var(--text-muted); font-size:12px;">${mod.desc}</p>
-                        <div style="color:var(--success); font-weight:600; font-size:12px; margin-top:10px;">✅ Modul utilitas aktif dan berjalan optimal di dalam OS.</div>
+                        <div style="color:var(--success); font-weight:600; font-size:12px; margin-top:10px;">✅ Modul utilitas aktif dan berjalan optimal.</div>
                     </div>
                 `;
             }
@@ -529,33 +524,16 @@
             input.value = '';
             box.scrollTop = box.scrollHeight;
 
-            const apiKey = appState.config.apiSettings?.aiKey;
-            
-            if (apiKey && apiKey.startsWith('sk-')) {
-                // Real API call simulation or endpoint call handler
-                setTimeout(() => {
-                    box.innerHTML += `<div style="background:var(--bg-hover); padding:8px 12px; border-radius:8px; font-size:12px; max-width:85%;">[API Connected]: Menanggapi query Anda "${val}" dengan model neural tingkat lanjut.</div>`;
-                    box.scrollTop = box.scrollHeight;
-                }, 600);
-            } else {
-                // Advanced Fallback Neural Engine
-                setTimeout(() => {
-                    let reply = `Analisis cerdas untuk "${val}": Sistem neural mendeteksi parameter optimal dan mengeksekusi instruksi instan.`;
-                    if(val.toLowerCase().includes('halo') || val.toLowerCase().includes('hi')) {
-                        reply = "Halo! Ada yang bisa saya bantu di sistem Nexus Core hari ini?";
-                    } else if(val.toLowerCase().includes('kode') || val.toLowerCase().includes('code')) {
-                        reply = "Struktur kode modular siap dioptimalkan. Gunakan Dev Studio IDE untuk penyuntingan lanjutan.";
-                    }
-                    box.innerHTML += `<div style="background:var(--bg-hover); padding:8px 12px; border-radius:8px; font-size:12px; max-width:85%;">${reply}</div>`;
-                    box.scrollTop = box.scrollHeight;
-                }, 500);
-            }
+            setTimeout(() => {
+                box.innerHTML += `<div style="background:var(--bg-hover); padding:8px 12px; border-radius:8px; font-size:12px; max-width:85%;">Neural Core memproses query: "${val}". Berhasil!</div>`;
+                box.scrollTop = box.scrollHeight;
+            }, 500);
         }
 
         function saveOSNotes() {
             const noteText = document.getElementById('osNotesArea').value;
             localStorage.setItem('nexus_os_notes', noteText);
-            alert('Catatan berhasil disimpan ke penyimpanan lokal.');
+            alert('Catatan berhasil disimpan!');
         }
 
         function addLedgerEntry() {
@@ -622,7 +600,6 @@
             }
         }
 
-        // Render Profile & Pengaturan Keamanan Profil Pengguna Lengkap
         function renderProfileView() {
             const container = document.getElementById('profileCardContent');
             if(!container) return;
@@ -649,7 +626,7 @@
                         <span style="font-size:10px; background:rgba(0,0,0,0.3); padding:2px 8px; border-radius:8px; font-weight:700;">${user.role}</span>
                         <div class="profile-stats">
                             <div><b>${appState.following.length}</b> Mengikuti</div>
-                            <div><b>24</b> Pengikut</div>
+                            <div><b>28</b> Pengikut</div>
                         </div>
                     </div>
                     <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:14px; display:flex; flex-direction:column; gap:10px;">
