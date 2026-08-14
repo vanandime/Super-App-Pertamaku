@@ -3,36 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modular Super App</title>
+    <title>All-in-One Super App</title>
     <style>
-        body { padding: 40px; font-family: Arial, sans-serif; transition: background 0.3s; }
+        * { box-sizing: border-box; }
+        body { 
+            margin: 0; 
+            padding: 20px; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background-color: #121212; 
+            color: #ffffff; 
+            transition: background-color 0.3s ease;
+        }
+        .header {
+            max-width: 600px;
+            margin: 0 auto 20px auto;
+            padding: 10px;
+            border-bottom: 1px solid #333;
+        }
+        h1 { font-size: 24px; margin: 0 0 5px 0; }
+        #app-status { font-size: 12px; color: #888; margin: 0; }
+        
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background: #1e1e1e; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5); 
+        }
+        .category-item { 
+            display: flex; 
+            align-items: center; 
+            padding: 15px 20px; 
+            text-decoration: none; 
+            color: #ffffff; 
+            border-bottom: 1px solid #2a2a2a; 
+            transition: background 0.2s; 
+        }
+        .category-item:last-child { border-bottom: none; }
+        .category-item:hover { background: #2c2c2c; }
+        .category-icon { font-size: 20px; margin-right: 15px; width: 30px; text-align: center; }
+        .category-name { font-size: 16px; font-weight: 500; }
     </style>
 </head>
 <body id="app-body">
-    <h1 id="app-title">Memuat Super App...</h1>
-    <p id="app-status">Sedang menghubungkan ke GitHub Gist...</p>
+
+    <div class="header">
+        <h1 id="app-title">Memuat Super App...</h1>
+        <p id="app-status">Menghubungkan ke GitHub Gist...</p>
+    </div>
+
+    <div class="container" id="category-container">
+        <!-- Kategori akan dimuat secara dinamis dari Gist -->
+    </div>
 
     <script>
-        // URL raw langsung tanpa kode commit panjang agar selalu sinkron otomatis
         const configUrl = 'https://gist.githubusercontent.com/vanandime/0c17195c5071e6db97540e40e304ad33/raw/config.json';
 
         async function loadSuperApp() {
             try {
                 const response = await fetch(configUrl);
+                if (!response.ok) throw new Error('Gagal mengambil data');
+                
                 const config = await response.json();
 
-                document.getElementById('app-title').innerText = config.appName || 'Super App';
-                document.getElementById('app-body').style.backgroundColor = config.themeColor || '#ffffff';
-                document.getElementById('app-status').innerText = "Status: Berhasil dimuat secara live dari GitHub Gist!";
+                // Terapkan Tema & Judul Utama
+                document.getElementById('app-title').innerText = config.appName || 'All-in-One Super App';
+                document.getElementById('app-body').style.backgroundColor = config.themeColor || '#121212';
+                document.getElementById('app-status').innerText = "Status: Terhubung secara live ke Gist";
 
-                localStorage.setItem('app_config', JSON.stringify(config));
+                // Render Daftar Kategori ala Play Store
+                const container = document.getElementById('category-container');
+                container.innerHTML = '';
+                
+                if (config.categories && Array.isArray(config.categories)) {
+                    config.categories.forEach(cat => {
+                        const a = document.createElement('a');
+                        a.href = cat.link;
+                        a.className = 'category-item';
+                        a.innerHTML = `
+                            <span class="category-icon">${cat.icon || '📌'}</span>
+                            <span class="category-name">${cat.name}</span>
+                        `;
+                        container.appendChild(a);
+                    });
+                }
+
+                // Simpan ke Cache Lokal untuk Offline
+                localStorage.setItem('all_in_one_config', JSON.stringify(config));
             } catch (error) {
-                const cachedConfig = localStorage.getItem('app_config');
-                if (cachedConfig) {
-                    const config = JSON.parse(cachedConfig);
-                    document.getElementById('app-title').innerText = config.appName + " (Mode Offline)";
-                    document.getElementById('app-body').style.backgroundColor = config.themeColor || '#ffffff';
-                    document.getElementById('app-status').innerText = "Status: Menggunakan data cadangan offline.";
+                console.warn('Gagal memuat online, menggunakan cache lokal...');
+                const cached = localStorage.getItem('all_in_one_config');
+                if (cached) {
+                    const config = JSON.parse(cached);
+                    document.getElementById('app-title').innerText = config.appName + " (Offline)";
+                    document.getElementById('app-status').innerText = "Status: Mode Offline aktif";
+                    
+                    const container = document.getElementById('category-container');
+                    container.innerHTML = '';
+                    config.categories.forEach(cat => {
+                        const a = document.createElement('a');
+                        a.href = cat.link;
+                        a.className = 'category-item';
+                        a.innerHTML = `
+                            <span class="category-icon">${cat.icon || '📌'}</span>
+                            <span class="category-name">${cat.name}</span>
+                        `;
+                        container.appendChild(a);
+                    });
+                } else {
+                    document.getElementById('app-status').innerText = "Gagal memuat data sama sekali.";
                 }
             }
         }
