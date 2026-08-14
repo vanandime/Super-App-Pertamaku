@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#030712">
-    <title>Nexus Core OS v13.0 Ultimate Elite</title>
+    <title>Nexus Core OS v13.1 Ultimate Elite</title>
     <link rel="manifest" href="data:application/manifest+json,{
         'name':'Nexus Core OS',
         'short_name':'NexusOS',
@@ -106,7 +106,8 @@
         .admin-badge { background: rgba(245, 158, 11, 0.2); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.4); padding: 3px 10px; border-radius: 8px; font-size: 10px; font-weight: 800; }
     </style>
 </head>
-<body>
+
+    <body>
     <div class="os-container">
         <!-- Loading Illusion Overlay Engine -->
         <div id="loaderOverlay">
@@ -118,7 +119,7 @@
         <div class="os-header">
             <div class="os-brand">
                 <h1 id="brandTitle">Nexus Core OS</h1>
-                <span id="brandSub">v13.0 ULTIMATE</span>
+                <span id="brandSub">v13.1 ULTIMATE</span>
             </div>
             <div class="user-pill" onclick="switchView('profileView')">
                 <img id="headerUserAvatar" class="user-avatar-sm" src="https://api.dicebear.com/7.x/bottts/svg?seed=guest" alt="Avatar">
@@ -298,7 +299,7 @@
                     if (parsed.config && parsed.config.apiSettings) appState.config.apiSettings = parsed.config.apiSettings;
                 } else {
                     appState.posts = [
-                        { id: 1, author: 'admin', text: 'Nexus Core OS v13.0 Ultimate Elite online dengan arsitektur terlengkap!', time: 'Baru saja', likes: 35 }
+                        { id: 1, author: 'admin', text: 'Nexus Core OS v13.1 Ultimate Elite online dengan arsitektur terlengkap!', time: 'Baru saja', likes: 40 }
                     ];
                 }
             } catch (e) {
@@ -626,11 +627,11 @@
                         <span style="font-size:10px; background:rgba(0,0,0,0.3); padding:2px 8px; border-radius:8px; font-weight:700;">${user.role}</span>
                         <div class="profile-stats">
                             <div><b>${appState.following.length}</b> Mengikuti</div>
-                            <div><b>28</b> Pengikut</div>
+                            <div><b>30</b> Pengikut</div>
                         </div>
                     </div>
                     <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:14px; display:flex; flex-direction:column; gap:10px;">
-                        <h4 style="margin:0; font-size:13px;">Pengaturan Akun & Keamanan Profil</h4>
+                        <h4 style="margin:0; font-size:13px;">Pengaturan Akun & Profil</h4>
                         <div class="form-group"><label>Bio Singkat</label><input type="text" id="editBio" class="form-control" value="${user.bio || ''}"></div>
                         <div class="form-group"><label>URL Foto Profil (Avatar)</label><input type="text" id="editAvatar" class="form-control" value="${user.avatar || ''}"></div>
                         <div class="form-group">
@@ -644,12 +645,7 @@
                         </div>
                         <div class="form-group"><label>Warna Aksen Kustom</label><input type="color" id="editColor" value="${user.themeColor || '#6366f1'}" style="width:100%; height:36px; background:none; border:none; cursor:pointer; border-radius:8px;"></div>
                         
-                        <hr style="border:none; border-top:1px solid var(--border); margin:4px 0;">
-                        <h4 style="margin:0; font-size:13px; color:var(--warning);">Keamanan & Kata Sandi</h4>
-                        <div class="form-group"><label>Password Lama</label><input type="password" id="oldPass" class="form-control" placeholder="Konfirmasi sandi lama..."></div>
-                        <div class="form-group"><label>Password Baru</label><input type="password" id="newPass" class="form-control" placeholder="Sandi baru (opsional)..."></div>
-
-                        <button class="btn" onclick="withLoading(saveProfileChanges)">Simpan Perubahan & Keamanan</button>
+                        <button class="btn" onclick="withLoading(saveProfileChanges)">Simpan Perubahan Profil</button>
                         <button class="btn btn-danger" onclick="withLoading(handleLogout)">Keluar Akun</button>
                     </div>
                 `;
@@ -693,16 +689,6 @@
 
         function saveProfileChanges() {
             if(!appState.currentUser) return;
-            const oldPass = document.getElementById('oldPass').value.trim();
-            const newPass = document.getElementById('newPass').value.trim();
-
-            if (newPass) {
-                if (oldPass !== appState.currentUser.password) {
-                    return alert('Password lama tidak sesuai! Perubahan keamanan dibatalkan.');
-                }
-                appState.currentUser.password = newPass;
-            }
-
             appState.currentUser.bio = document.getElementById('editBio').value;
             appState.currentUser.avatar = document.getElementById('editAvatar').value;
             appState.currentUser.themePreset = document.getElementById('editThemePreset').value;
@@ -714,7 +700,7 @@
             localStorage.setItem('nexus_users_db', JSON.stringify(db));
             saveStateToStorage();
             initOS();
-            alert('Pengaturan profil & keamanan sandi berhasil diperbarui!');
+            alert('Pengaturan profil berhasil diperbarui!');
         }
 
         function renderAdminUserList() {
