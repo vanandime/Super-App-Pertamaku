@@ -56,3 +56,71 @@
     <div class="container" id="category-container">
         <!-- Konten kategori akan dimuat dinamis pada Bagian 2 -->
     </div>
+    <script>
+        // URL RAW Gist bersih tanpa kode commit hash agar selalu real-time
+        const configUrl = 'https://gist.githubusercontent.com/vanandime/0c17195c5071e6db97540e40e304ad33/raw/config.json';
+
+        async function loadSuperApp() {
+            try {
+                const response = await fetch(configUrl);
+                if (!response.ok) throw new Error('Gagal mengambil data dari server');
+                
+                const config = await response.json();
+
+                // Terapkan data Gist ke elemen UI secara live
+                document.getElementById('app-title').innerText = config.appName || 'All-in-One Super App';
+                document.getElementById('app-body').style.backgroundColor = config.themeColor || '#121212';
+                document.getElementById('app-status').innerText = "Status: Terhubung secara live ke Gist";
+
+                // Render Daftar Kategori secara dinamis
+                const container = document.getElementById('category-container');
+                container.innerHTML = '';
+                
+                if (config.categories && Array.isArray(config.categories)) {
+                    config.categories.forEach(cat => {
+                        const a = document.createElement('a');
+                        a.href = cat.link || '#';
+                        a.className = 'category-item';
+                        a.innerHTML = `
+                            <span class="category-icon">${cat.icon || '📌'}</span>
+                            <span class="category-name">${cat.name}</span>
+                        `;
+                        container.appendChild(a);
+                    });
+                }
+
+                // Simpan snapshot ke LocalStorage untuk fallback offline
+                localStorage.setItem('all_in_one_config', JSON.stringify(config));
+            } catch (error) {
+                console.warn('Koneksi gagal, beralih ke cache lokal...');
+                const cachedConfig = localStorage.getItem('all_in_one_config');
+                
+                if (cachedConfig) {
+                    const config = JSON.parse(cachedConfig);
+                    document.getElementById('app-title').innerText = (config.appName || 'All-in-One Super App') + " (Mode Offline)";
+                    document.getElementById('app-status').innerText = "Status: Menggunakan data cadangan offline.";
+                    
+                    const container = document.getElementById('category-container');
+                    container.innerHTML = '';
+                    if (config.categories && Array.isArray(config.categories)) {
+                        config.categories.forEach(cat => {
+                            const a = document.createElement('a');
+                            a.href = cat.link || '#';
+                            a.className = 'category-item';
+                            a.innerHTML = `
+                                <span class="category-icon">${cat.icon || '📌'}</span>
+                                <span class="category-name">${cat.name}</span>
+                            `;
+                            container.appendChild(a);
+                        });
+                    }
+                } else {
+                    document.getElementById('app-status').innerText = "Gagal memuat konfigurasi. Periksa koneksi Anda.";
+                }
+            }
+        }
+
+        loadSuperApp();
+    </script>
+</body>
+</html>
