@@ -2,8 +2,8 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Core OS - Super App Hub v8.0</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Nexus Core OS v10.0</title>
     <style>
         :root {
             --bg-deep: #020617;
@@ -13,192 +13,175 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --accent: #6366f1;
-            --accent-glow: rgba(99, 102, 241, 0.5);
+            --accent-glow: rgba(99, 102, 241, 0.4);
             --border: #1e293b;
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
         }
 
+        /* Theme Presets */
+        [data-theme="emerald"] { --accent: #10b981; --accent-glow: rgba(16, 185, 129, 0.4); }
+        [data-theme="sunset"] { --accent: #f43f5e; --accent-glow: rgba(244, 63, 94, 0.4); }
+        [data-theme="obsidian"] { --accent: #38bdf8; --accent-glow: rgba(56, 189, 248, 0.4); --bg-deep: #000; --bg-surface: #09090b; --bg-card: #121214; }
+
         * { box-sizing: border-box; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
         body {
             margin: 0; padding: 0;
             background-color: var(--bg-deep);
             color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-image: radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.15), transparent 45%),
-                              radial-gradient(circle at 90% 90%, rgba(168, 85, 247, 0.12), transparent 45%);
+            min-height: 100vh; min-height: 100dvh;
+            display: flex; justify-content: center; align-items: center;
         }
 
         .os-container {
             width: 100%; max-width: 480px; height: 100vh; height: 100dvh;
-            max-height: 920px; background: var(--bg-surface);
-            border: 1px solid var(--border); border-radius: 32px;
-            display: flex; flex-direction: column; overflow: hidden;
-            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 30px rgba(99, 102, 241, 0.1);
-            position: relative;
+            background: var(--bg-surface); border: 1px solid var(--border);
+            border-radius: 0; display: flex; flex-direction: column; overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8); position: relative;
         }
-
         @media (min-width: 500px) {
-            .os-container { height: 90vh; }
+            .os-container { height: 92vh; border-radius: 32px; }
         }
 
         /* Header */
         .os-header {
-            padding: 20px 24px; background: var(--bg-card);
+            padding: 16px 20px; background: var(--bg-card);
             border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center;
-            flex-shrink: 0; backdrop-filter: blur(10px);
+            display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
         }
-        .os-brand h1 { font-size: 19px; margin: 0; font-weight: 800; letter-spacing: -0.5px; background: linear-gradient(135deg, #818cf8, #e879f9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .os-brand span { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .os-brand h1 { font-size: 17px; margin: 0; font-weight: 800; background: linear-gradient(135deg, var(--accent), #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .os-brand span { font-size: 10px; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px; }
 
         .user-pill {
-            display: flex; align-items: center; gap: 10px; background: var(--bg-deep);
-            padding: 6px 14px; border-radius: 24px; border: 1px solid var(--border); cursor: pointer;
-            transition: all 0.25s ease;
+            display: flex; align-items: center; gap: 8px; background: var(--bg-deep);
+            padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border); cursor: pointer; transition: 0.2s;
         }
-        .user-pill:hover { border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
-        .user-avatar-sm { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; background: var(--accent); }
+        .user-pill:hover { border-color: var(--accent); }
+        .user-avatar-sm { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; background: var(--accent); }
 
-        /* Navigation Views */
+        /* Body Views */
         .os-body {
-            flex: 1; overflow-y: auto; padding: 20px 24px;
-            display: flex; flex-direction: column; gap: 20px;
-            scroll-behavior: smooth;
+            flex: 1; overflow-y: auto; padding: 16px 20px;
+            display: flex; flex-direction: column; gap: 16px;
+            padding-bottom: 20px;
         }
-        .view-section { display: none; flex-direction: column; gap: 16px; animation: fadeIn 0.25s ease; }
+        .view-section { display: none; flex-direction: column; gap: 14px; animation: fadeIn 0.2s ease; }
         .view-section.active { display: flex; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Search & Filters */
         .search-box { position: relative; }
         .search-input {
-            width: 100%; padding: 14px 16px 14px 44px; background: var(--bg-card);
-            border: 1px solid var(--border); border-radius: 16px; color: var(--text-main);
-            font-size: 14px; outline: none; transition: all 0.25s;
+            width: 100%; padding: 12px 14px 12px 40px; background: var(--bg-card);
+            border: 1px solid var(--border); border-radius: 14px; color: var(--text-main); font-size: 13px; outline: none;
         }
-        .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-glow); }
-        .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; fill: var(--text-muted); }
+        .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+        .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; fill: var(--text-muted); }
 
-        .category-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+        .category-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
         .category-scroll::-webkit-scrollbar { display: none; }
         .cat-pill {
             background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);
-            padding: 8px 16px; border-radius: 22px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.2s;
+            padding: 6px 12px; border-radius: 18px; font-size: 11px; font-weight: 600; cursor: pointer; white-space: nowrap;
         }
-        .cat-pill.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 4px 15px var(--accent-glow); }
+        .cat-pill.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 4px 12px var(--accent-glow); }
 
         /* Module Cards */
-        .module-list { display: flex; flex-direction: column; gap: 12px; }
+        .module-list { display: flex; flex-direction: column; gap: 10px; }
         .module-card {
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: 18px;
-            padding: 16px 18px; display: flex; align-items: center; justify-content: space-between;
-            cursor: pointer; transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+            padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: 0.2s;
         }
-        .module-card:hover { background: var(--bg-hover); transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.4); }
-        .mod-left { display: flex; align-items: center; gap: 16px; }
+        .module-card:hover { background: var(--bg-hover); border-color: var(--accent); transform: translateY(-2px); }
+        .mod-left { display: flex; align-items: center; gap: 14px; }
         .mod-icon {
-            width: 48px; height: 48px; background: rgba(99, 102, 241, 0.12); border-radius: 14px;
-            display: flex; align-items: center; justify-content: center; fill: var(--accent); font-size: 22px;
-            border: 1px solid rgba(99, 102, 241, 0.2);
+            width: 42px; height: 42px; background: rgba(99, 102, 241, 0.1); border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; fill: var(--accent); font-size: 20px; border: 1px solid var(--border);
         }
-        .mod-info h4 { margin: 0 0 4px 0; font-size: 15px; font-weight: 700; letter-spacing: -0.2px; }
-        .mod-info p { margin: 0; font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+        .mod-info h4 { margin: 0 0 2px 0; font-size: 14px; font-weight: 700; }
+        .mod-info p { margin: 0; font-size: 11px; color: var(--text-muted); }
 
         /* Buttons & Forms */
         .btn {
-            background: var(--accent); color: #fff; border: none; padding: 12px 20px;
-            border-radius: 14px; font-size: 13px; font-weight: 700; cursor: pointer;
-            transition: all 0.25s; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            box-shadow: 0 6px 20px var(--accent-glow);
+            background: var(--accent); color: #fff; border: none; padding: 10px 16px;
+            border-radius: 12px; font-size: 12px; font-weight: 700; cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 14px var(--accent-glow);
         }
-        .btn:hover { opacity: 0.92; transform: translateY(-2px); box-shadow: 0 8px 25px var(--accent-glow); }
+        .btn:hover { opacity: 0.9; }
         .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); box-shadow: none; }
-        .btn-outline:hover { background: var(--bg-hover); border-color: var(--text-muted); }
-        .btn-danger { background: var(--danger); box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4); }
+        .btn-outline:hover { background: var(--bg-hover); }
+        .btn-danger { background: var(--danger); box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3); }
 
-        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
-        .form-group label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
-        .form-control {
-            width: 100%; padding: 12px 16px; background: var(--bg-deep); border: 1px solid var(--border);
-            border-radius: 14px; color: var(--text-main); font-size: 14px; outline: none; transition: all 0.2s;
+        .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+        .form-group label { font-size: 11px; font-weight: 600; color: var(--text-muted); }
+        .form-control, .form-select {
+            width: 100%; padding: 10px 12px; background: var(--bg-deep); border: 1px solid var(--border);
+            border-radius: 10px; color: var(--text-main); font-size: 13px; outline: none;
         }
-        .form-control:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+        .form-control:focus, .form-select:focus { border-color: var(--accent); }
 
-        /* Fixed Bottom Navigation */
+        /* Fixed Bottom Navigation - Safe from system overlap */
         .os-nav {
-            background: rgba(17, 24, 39, 0.85); backdrop-filter: blur(12px);
-            border-top: 1px solid var(--border); padding: 12px 20px;
+            background: var(--bg-card); border-top: 1px solid var(--border);
+            padding: 10px 16px calc(10px + env(safe-area-inset-bottom)) 16px;
             display: flex; justify-content: space-around; align-items: center;
             flex-shrink: 0; z-index: 50;
         }
         .nav-item {
-            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            display: flex; flex-direction: column; align-items: center; gap: 3px;
             background: none; border: none; color: var(--text-muted); cursor: pointer;
-            font-size: 10px; font-weight: 600; transition: all 0.2s; padding: 4px 12px; border-radius: 12px;
+            font-size: 9px; font-weight: 600; padding: 4px 8px; border-radius: 10px; transition: 0.2s;
         }
-        .nav-item svg { width: 22px; height: 22px; fill: currentColor; transition: transform 0.2s; }
-        .nav-item.active { color: var(--accent); background: rgba(99, 102, 241, 0.08); }
-        .nav-item.active svg { transform: scale(1.1); }
+        .nav-item svg { width: 20px; height: 20px; fill: currentColor; }
+        .nav-item.active { color: var(--accent); background: rgba(99, 102, 241, 0.1); }
 
-        /* Workspace Overlay Screen */
+        /* Workspace Modal */
         .workspace-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-surface); z-index: 100; display: none; flex-direction: column;
-            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: slideUp 0.2s ease;
         }
         .workspace-screen.active { display: flex; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
         .ws-header {
-            padding: 18px 24px; background: var(--bg-card); border-bottom: 1px solid var(--border);
+            padding: 16px 20px; background: var(--bg-card); border-bottom: 1px solid var(--border);
             display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
         }
-        .ws-body { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+        .ws-body { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
 
-        /* Profile Banner */
         .profile-banner {
-            background: linear-gradient(135deg, var(--accent), #9333ea); padding: 28px 20px;
-            border-radius: 22px; text-align: center; position: relative; margin-bottom: 10px;
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+            background: linear-gradient(135deg, var(--accent), #9333ea); padding: 22px 16px;
+            border-radius: 18px; text-align: center; margin-bottom: 6px; box-shadow: 0 8px 20px var(--accent-glow);
         }
         .profile-avatar-lg {
-            width: 82px; height: 82px; border-radius: 50%; border: 4px solid var(--bg-surface);
-            object-fit: cover; background: var(--bg-card); margin: 0 auto 12px auto; display: block;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            width: 70px; height: 70px; border-radius: 50%; border: 3px solid var(--bg-surface);
+            object-fit: cover; background: var(--bg-card); margin: 0 auto 8px auto; display: block;
         }
-        .profile-stats { display: flex; justify-content: center; gap: 24px; margin-top: 14px; font-size: 13px; color: rgba(255,255,255,0.95); }
-        .profile-stats div b { display: block; font-size: 17px; color: #fff; }
-
-        .admin-badge { background: rgba(245, 158, 11, 0.2); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.4); padding: 5px 12px; border-radius: 10px; font-size: 11px; font-weight: 800; letter-spacing: 0.5px; }
-        .status-indicator { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 10px var(--success); }
+        .profile-stats { display: flex; justify-content: center; gap: 18px; margin-top: 10px; font-size: 12px; color: rgba(255,255,255,0.9); }
+        .profile-stats div b { display: block; font-size: 15px; color: #fff; }
+        .admin-badge { background: rgba(245, 158, 11, 0.2); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.4); padding: 3px 10px; border-radius: 8px; font-size: 10px; font-weight: 800; }
     </style>
 </head>
-<body>
+<body data-theme="midnight">
 
     <div class="os-container">
-        <!-- OS Header -->
+        <!-- Header -->
         <div class="os-header">
             <div class="os-brand">
-                <h1 id="osTitle">Nexus Core OS</h1>
-                <span id="osSubtitle">Elite Edition v8.0</span>
+                <h1 id="brandTitle">Nexus Core OS</h1>
+                <span id="brandSub">v10.0 ULTIMATE</span>
             </div>
             <div class="user-pill" onclick="switchView('profileView')">
                 <img id="headerUserAvatar" class="user-avatar-sm" src="https://api.dicebear.com/7.x/bottts/svg?seed=guest" alt="Avatar">
-                <span id="headerUserName" style="font-size: 12px; font-weight: 700;">Tamu</span>
+                <span id="headerUserName" style="font-size: 11px; font-weight: 700;">Tamu</span>
             </div>
         </div>
 
-        <!-- OS Body / Views -->
+        <!-- Body Views -->
         <div class="os-body">
-
-            <!-- VIEW 1: DASHBOARD / MODULES -->
+            <!-- DASHBOARD -->
             <div id="dashboardView" class="view-section active">
                 <div class="search-box">
                     <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
@@ -206,136 +189,122 @@
                 </div>
 
                 <div class="category-scroll">
-                    <button class="cat-pill active" onclick="filterCategory('all', this)">Semua</button>
-                    <button class="cat-pill" onclick="filterCategory('ai', this)">🤖 AI Neural</button>
-                    <button class="cat-pill" onclick="filterCategory('social', this)">💬 Social Feed</button>
-                    <button class="cat-pill" onclick="filterCategory('productivity', this)">⚡ Productivity</button>
-                    <button class="cat-pill" onclick="filterCategory('finance', this)">💳 Wealth & Ledger</button>
-                    <button class="cat-pill" onclick="filterCategory('tools', this)">🛠️ Dev Studio</button>
+                    <button class="cat-pill active" onclick="filterCategory('all', this)" id="pillAll">Semua</button>
+                    <button class="cat-pill" onclick="filterCategory('ai', this)" id="pillAi">AI Neural</button>
+                    <button class="cat-pill" onclick="filterCategory('social', this)" id="pillSoc">Social</button>
+                    <button class="cat-pill" onclick="filterCategory('productivity', this)" id="pillProd">Productivity</button>
+                    <button class="cat-pill" onclick="filterCategory('finance', this)" id="pillFin">Finance</button>
+                    <button class="cat-pill" onclick="filterCategory('tools', this)" id="pillTools">Tools</button>
                 </div>
 
-                <div class="module-list" id="moduleContainer">
-                    <!-- Dynamic Modules Rendered Here -->
-                </div>
+                <div class="module-list" id="moduleContainer"></div>
 
-                <div style="margin-top: auto; padding-top: 15px; display: flex; justify-content: space-between; align-items: center;">
-                    <div class="status-indicator">
-                        <span class="dot" id="syncDot"></span>
-                        <span id="syncStatusText">Gist Edge Synced</span>
+                <div style="margin-top: auto; padding-top: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 11px;">
+                    <div style="display:flex; align-items:center; gap:6px; color:var(--text-muted);">
+                        <span style="width:7px; height:7px; background:var(--success); border-radius:50%; display:inline-block;"></span>
+                        <span id="syncText">Edge Synced</span>
                     </div>
-                    <span id="activeUserRoleBadge" style="font-size: 11px; color: var(--text-muted); font-weight: 600;">Role: Tamu</span>
+                    <span id="roleText" style="color:var(--text-muted);">Role: Tamu</span>
                 </div>
             </div>
 
-            <!-- VIEW 2: SOCIAL / COMMUNITY FEED -->
+            <!-- COMMUNITY FEED -->
             <div id="socialView" class="view-section">
-                <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Nexus Community Stream</h3>
+                <h3 style="margin: 0; font-size: 15px;" id="commTitle">Community Stream</h3>
                 <div class="form-group">
-                    <textarea id="postContentInput" class="form-control" placeholder="Bagikan pemikiran atau proyek ke jaringan Nexus..." style="height: 90px; resize: none;"></textarea>
-                    <button class="btn" onclick="createPost()" style="margin-top: 8px;">Kirim Postingan</button>
+                    <textarea id="postContentInput" class="form-control" placeholder="Bagikan ide atau pemikiran..." style="height: 75px; resize: none;"></textarea>
+                    <button class="btn" onclick="createPost()" style="margin-top: 6px;" id="postBtn">Kirim Postingan</button>
                 </div>
-                <div id="feedContainer" style="display: flex; flex-direction: column; gap: 12px;">
-                    <!-- Posts rendered here -->
-                </div>
+                <div id="feedContainer" style="display: flex; flex-direction: column; gap: 10px;"></div>
             </div>
 
-            <!-- VIEW 3: PROFILE, AUTH & SECURITY SETTINGS -->
+            <!-- PROFILE & SETTINGS (Language, Theme, Security) -->
             <div id="profileView" class="view-section">
-                <div id="profileCardContent">
-                    <!-- Rendered dynamically -->
-                </div>
+                <div id="profileCardContent"></div>
             </div>
 
-            <!-- VIEW 4: ADMIN / DEV COMMAND CENTER -->
+            <!-- ADMIN COMMAND CENTER -->
             <div id="adminView" class="view-section">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Admin Command Center</h3>
-                    <span class="admin-badge">ROOT ACCESS</span>
+                    <h3 style="margin: 0; font-size: 15px;">Admin Control Center</h3>
+                    <span class="admin-badge">ROOT</span>
                 </div>
-                <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Kontrol penuh konfigurasi sistem, database pengguna, dan injeksi Gist langsung dari core OS.</p>
+                <p style="font-size: 11px; color: var(--text-muted); margin: 0;" id="adminDesc">Kendali penuh sistem dan manajemen akun terdaftar.</p>
                 
-                <div class="form-group" style="margin-top: 10px;">
-                    <label>Live Gist JSON Config Editor</label>
-                    <textarea id="adminJsonEditor" class="form-control" style="height: 160px; font-family: monospace; font-size: 12px;"></textarea>
-                    <button class="btn" onclick="saveAdminConfig()" style="margin-top: 8px;">Simpan & Terapkan Global Gist</button>
+                <div class="form-group" style="margin-top: 6px;">
+                    <label>Gist JSON Editor</label>
+                    <textarea id="adminJsonEditor" class="form-control" style="height: 120px; font-family: monospace; font-size: 11px;"></textarea>
+                    <button class="btn" onclick="saveAdminConfig()" style="margin-top: 6px;">Simpan Gist Config</button>
                 </div>
 
                 <div class="form-group">
-                    <label>Manajemen Pengguna Terdaftar</label>
-                    <div id="adminUserList" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 12px; max-height: 140px; overflow-y: auto; font-size: 12px;">
-                        <!-- User list -->
-                    </div>
+                    <label>Manajemen User Terdaftar (Hapus / Ubah Role)</label>
+                    <div id="adminUserList" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 8px; max-height: 140px; overflow-y: auto; font-size: 11px;"></div>
                 </div>
             </div>
-
         </div>
 
-        <!-- Locked Fixed Bottom Navigation -->
+        <!-- Fixed Bottom Navigation (Optimized & Protected) -->
         <div class="os-nav">
             <button class="nav-item active" onclick="switchNav('dashboardView', this)">
                 <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
-                Dashboard
+                <span id="navDash">Dashboard</span>
             </button>
             <button class="nav-item" onclick="switchNav('socialView', this)">
                 <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-                Community
+                <span id="navComm">Community</span>
             </button>
             <button class="nav-item" onclick="switchNav('profileView', this)">
                 <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
-                Profile & Auth
+                <span id="navProf">Profile</span>
             </button>
             <button class="nav-item" id="adminNavBtn" style="display: none;" onclick="switchNav('adminView', this)">
-                <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.47l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.47l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-                Admin Panel
+                <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.47l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c-.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.47l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                <span id="navAdmin">Admin</span>
             </button>
         </div>
 
-        <!-- In-App Interactive Workspace Screen -->
+        <!-- Workspace Screen -->
         <div class="workspace-screen" id="workspaceScreen">
             <div class="ws-header">
-                <h3 id="wsTitle" style="margin: 0; font-size: 16px; font-weight: 700;">Workspace</h3>
-                <button class="btn btn-outline" style="padding: 6px 12px; font-size: 12px;" onclick="closeWorkspace()">Tutup ✕</button>
+                <h3 id="wsTitle" style="margin: 0; font-size: 15px;">Workspace</h3>
+                <button class="btn btn-outline" style="padding: 4px 10px; font-size: 11px;" onclick="closeWorkspace()">Tutup ✕</button>
             </div>
-            <div class="ws-body" id="wsBodyContent">
-                <!-- Interactive tools injected here -->
-            </div>
+            <div class="ws-body" id="wsBodyContent"></div>
         </div>
-
     </div>
 
     <script>
         const configUrl = 'https://gist.githubusercontent.com/vanandime/0c17195c5071e6db97540e40e304ad33/raw/config.json';
         
-        // Robust State & Bulletproof User Database Initialization with Forced Admin Seeding
-        let defaultAdmin = { username: 'admin', password: 'adminpassword', role: 'Developer', bio: 'Master Root Administrator & Core Architect', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=admin', themeColor: '#6366f1' };
+        let defaultAdmin = { username: 'admin', password: 'adminpassword', role: 'Developer', bio: 'System Administrator', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=admin', themeColor: '#6366f1', themePreset: 'midnight', lang: 'id' };
         
         let usersDb = JSON.parse(localStorage.getItem('nexus_users_db') || '[]');
-        // Force sync or inject default admin to guarantee login access
         const adminIdx = usersDb.findIndex(x => x.username === 'admin');
-        if (adminIdx === -1) {
-            usersDb.unshift(defaultAdmin);
-        } else {
-            usersDb[adminIdx].password = 'adminpassword'; // ensure password is always valid
-            usersDb[adminIdx].role = 'Developer';
-        }
+        if (adminIdx === -1) { usersDb.unshift(defaultAdmin); } else { usersDb[adminIdx].password = 'adminpassword'; usersDb[adminIdx].role = 'Developer'; }
         localStorage.setItem('nexus_users_db', JSON.stringify(usersDb));
 
         let appState = {
             currentUser: JSON.parse(localStorage.getItem('nexus_current_session') || 'null'),
             users: usersDb,
             posts: JSON.parse(localStorage.getItem('nexus_posts') || JSON.stringify([
-                { id: 1, author: 'admin', text: 'Selamat datang di Nexus Core OS v8.0! Sistem login admin kini diproteksi dengan auto-sync.', time: 'Baru saja', likes: 12 }
+                { id: 1, author: 'admin', text: 'Nexus Core OS v10.0 dengan fitur kontrol user, multi-tema, dan bahasa aktif!', time: 'Baru saja', likes: 20 }
             ])),
             config: {
                 appName: "Nexus Core OS",
                 categories: [
                     { id: "mod-ai-1", name: "Nexus Neural AI", type: "ai", icon: "🤖", badge: "PRO", desc: "Asisten kecerdasan buatan terlatih." },
-                    { id: "mod-soc-1", name: "Community Stream", type: "social", icon: "💬", badge: "LIVE", desc: "Media sosial internal berbasis jaringan." },
-                    { id: "mod-prod-1", name: "Cloud Tasks & Notes", type: "productivity", icon: "⚡", badge: "SYNC", desc: "Manajemen tugas dan catatan sinkron." },
-                    { id: "mod-fin-1", name: "Wealth Ledger", type: "finance", icon: "💳", badge: "SECURE", desc: "Pencatat keuangan dan aset digital." },
-                    { id: "mod-dev-1", name: "Dev Studio IDE", type: "tools", icon: "🛠️", badge: "DEV", desc: "Perkakas editor dan utilitas skrip." }
+                    { id: "mod-soc-1", name: "Community Stream", type: "social", icon: "💬", badge: "LIVE", desc: "Media sosial internal jaringan." },
+                    { id: "mod-prod-1", name: "Cloud Tasks & Notes", type: "productivity", icon: "⚡", badge: "SYNC", desc: "Manajemen tugas dan catatan." },
+                    { id: "mod-fin-1", name: "Wealth Ledger", type: "finance", icon: "💳", badge: "SECURE", desc: "Pencatat keuangan digital." },
+                    { id: "mod-dev-1", name: "Dev Studio IDE", type: "tools", icon: "🛠️", badge: "DEV", desc: "Perkakas editor dan utilitas." }
                 ]
             }
+        };
+
+        const i18n = {
+            id: { dash: "Dashboard", comm: "Community", prof: "Profile & Settings", admin: "Admin", sync: "Edge Synced", role: "Role", search: "Cari modul..." },
+            en: { dash: "Dashboard", comm: "Community", prof: "Profile & Settings", admin: "Admin", sync: "Edge Synced", role: "Role", search: "Search module..." }
         };
 
         let currentCategoryFilter = 'all';
@@ -345,31 +314,26 @@
                 const res = await fetch(configUrl);
                 if(res.ok) {
                     const remoteConfig = await res.json();
-                    if(remoteConfig && remoteConfig.categories) {
-                        appState.config = remoteConfig;
-                    }
+                    if(remoteConfig && remoteConfig.categories) appState.config = remoteConfig;
                 }
-                document.getElementById('syncDot').style.background = 'var(--success)';
-                document.getElementById('syncStatusText').innerText = 'Gist Edge Synced';
-            } catch(e) {
-                document.getElementById('syncDot').style.background = 'var(--warning)';
-                document.getElementById('syncStatusText').innerText = 'Offline Mode (Local Cache)';
-            }
+            } catch(e) {}
             
             const savedConfig = localStorage.getItem('nexus_config_override');
-            if(savedConfig) {
-                try { appState.config = JSON.parse(savedConfig); } catch(err){}
-            }
+            if(savedConfig) { try { appState.config = JSON.parse(savedConfig); } catch(err){} }
 
-            if (appState.currentUser && appState.currentUser.themeColor) {
-                document.documentElement.style.setProperty('--accent', appState.currentUser.themeColor);
-            }
-
+            applyUserSettings();
             updateUIState();
             renderModules();
             renderFeed();
             renderProfileView();
             renderAdminUserList();
+        }
+
+        function applyUserSettings() {
+            const user = appState.currentUser;
+            const theme = user ? (user.themePreset || 'midnight') : 'midnight';
+            document.body.setAttribute('data-theme', theme);
+            if(user && user.themeColor) document.documentElement.style.setProperty('--accent', user.themeColor);
         }
 
         function updateUIState() {
@@ -382,27 +346,17 @@
             if(user) {
                 avatarSm.src = user.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.username}`;
                 nameSm.innerText = user.username;
-                roleBadge.innerText = `Role: ${user.role}`;
-                if(user.role === 'Developer') {
-                    adminNav.style.display = 'flex';
-                } else {
-                    adminNav.style.display = 'none';
-                }
-                if(user.themeColor) {
-                    document.documentElement.style.setProperty('--accent', user.themeColor);
-                }
+                if(adminNav) adminNav.style.display = (user.role === 'Developer') ? 'flex' : 'none';
             } else {
                 avatarSm.src = 'https://api.dicebear.com/7.x/bottts/svg?seed=guest';
-                nameSm.innerText = 'Tamu (Login)';
-                roleBadge.innerText = 'Role: Tamu';
-                adminNav.style.display = 'none';
+                nameSm.innerText = 'Tamu';
+                if(adminNav) adminNav.style.display = 'none';
             }
         }
 
         function switchView(viewId) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
-            
             if(viewId === 'profileView') {
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
                 document.querySelectorAll('.nav-item')[2].classList.add('active');
@@ -416,13 +370,12 @@
             btnEl.classList.add('active');
         }
 
-        // Render Modules Dashboard
         function renderModules() {
             const container = document.getElementById('moduleContainer');
             container.innerHTML = '';
             const query = document.getElementById('searchInput').value.toLowerCase();
-
             const categories = appState.config.categories || [];
+            
             const filtered = categories.filter(mod => {
                 const matchQuery = mod.name.toLowerCase().includes(query) || mod.desc.toLowerCase().includes(query);
                 const matchCat = currentCategoryFilter === 'all' || mod.type === currentCategoryFilter;
@@ -430,7 +383,7 @@
             });
 
             if(filtered.length === 0) {
-                container.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 30px;">Tidak ada modul ditemukan.</div>';
+                container.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 20px; font-size:12px;">Modul tidak ditemukan.</div>';
                 return;
             }
 
@@ -442,11 +395,11 @@
                     <div class="mod-left">
                         <div class="mod-icon">${mod.icon || '📌'}</div>
                         <div class="mod-info">
-                            <h4>${mod.name} ${mod.badge ? `<span style="font-size:9px; background:var(--accent); color:#fff; padding:3px 8px; border-radius:6px; margin-left:6px; font-weight:700;">${mod.badge}</span>`:''}</h4>
+                            <h4>${mod.name} ${mod.badge ? `<span style="font-size:9px; background:var(--accent); color:#fff; padding:2px 6px; border-radius:4px; margin-left:4px; font-weight:700;">${mod.badge}</span>`:''}</h4>
                             <p>${mod.desc}</p>
                         </div>
                     </div>
-                    <span style="color: var(--text-muted); font-size: 14px;">➔</span>
+                    <span style="color: var(--text-muted); font-size: 13px;">➔</span>
                 `;
                 container.appendChild(card);
             });
@@ -459,7 +412,6 @@
             renderModules();
         }
 
-        // In-App Interactive Workspaces
         function openWorkspace(mod) {
             document.getElementById('wsTitle').innerText = mod.name;
             const body = document.getElementById('wsBodyContent');
@@ -468,89 +420,81 @@
             const wrapper = document.createElement('div');
             wrapper.style.display = 'flex';
             wrapper.style.flexDirection = 'column';
-            wrapper.style.gap = '14px';
+            wrapper.style.gap = '10px';
 
             if(mod.type === 'ai') {
                 wrapper.innerHTML = `
-                    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:16px; padding:15px; height: 320px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;" id="aiChatBox">
-                        <div style="background:var(--bg-hover); padding:10px 14px; border-radius:12px; font-size:13px; max-width:85%;">Halo! Saya Nexus Neural AI siap membantu Anda. Ada yang bisa didiskusikan hari ini?</div>
+                    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:12px; height: 260px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;" id="aiChatBox">
+                        <div style="background:var(--bg-hover); padding:8px 12px; border-radius:8px; font-size:12px; max-width:85%;">Halo! Neural AI siap membantu Anda.</div>
                     </div>
-                    <div style="display:flex; gap:8px;">
-                        <input type="text" id="aiInput" class="form-control" placeholder="Ketik perintah AI..." onkeypress="if(event.key==='Enter') sendAIChat()">
-                        <button class="btn" onclick="sendAIChat()">Kirim</button>
+                    <div style="display:flex; gap:6px;">
+                        <input type="text" id="aiInput" class="form-control" placeholder="Ketik perintah..." onkeypress="if(event.key==='Enter') sendAIChat()">
+                        <button class="btn" onclick="sendAIChat()" style="padding:8px 14px;">Kirim</button>
                     </div>
                 `;
             } else if(mod.type === 'productivity') {
                 wrapper.innerHTML = `
                     <div class="form-group">
-                        <label>Catatan Pintar & Task Manager</label>
-                        <textarea id="osNotesArea" class="form-control" style="height:200px;" placeholder="Tulis catatan atau target tugas di sini..."></textarea>
-                        <button class="btn" onclick="saveOSNotes()" style="margin-top:8px;">Simpan ke Cloud Storage</button>
+                        <label>Catatan Pintar</label>
+                        <textarea id="osNotesArea" class="form-control" style="height:180px;" placeholder="Tulis catatan..."></textarea>
+                        <button class="btn" onclick="saveOSNotes()" style="margin-top:6px;">Simpan Catatan</button>
                     </div>
                 `;
             } else if(mod.type === 'finance') {
                 wrapper.innerHTML = `
-                    <div style="background:var(--bg-card); padding:16px; border-radius:16px; border:1px solid var(--border);">
-                        <h4 style="margin:0 0 10px 0; color:var(--success);">Saldo Utama: Rp 15.000.000</h4>
-                        <div class="form-group"><label>Keterangan Transaksi</label><input type="text" id="finDesc" class="form-control" placeholder="Contoh: Pendapatan Klien"></div>
-                        <div class="form-group"><label>Nominal (IDR)</label><input type="number" id="finNom" class="form-control" placeholder="750000"></div>
-                        <button class="btn" onclick="addLedgerEntry()">Catat Transaksi</button>
+                    <div style="background:var(--bg-card); padding:14px; border-radius:12px; border:1px solid var(--border);">
+                        <h4 style="margin:0 0 8px 0; color:var(--success); font-size:13px;">Saldo: Rp 25.000.000</h4>
+                        <div class="form-group"><label>Keterangan</label><input type="text" id="finDesc" class="form-control" placeholder="Transaksi..."></div>
+                        <div class="form-group"><label>Nominal (IDR)</label><input type="number" id="finNom" class="form-control" placeholder="500000"></div>
+                        <button class="btn" onclick="addLedgerEntry()">Catat</button>
                     </div>
-                    <div id="ledgerLog" style="font-size:12px; color:var(--text-muted);">Belum ada mutasi baru hari ini.</div>
+                    <div id="ledgerLog" style="font-size:11px; color:var(--text-muted);">Belum ada mutasi.</div>
                 `;
             } else {
                 wrapper.innerHTML = `
-                    <div style="background:var(--bg-card); padding:24px; border-radius:18px; text-align:center; border:1px solid var(--border);">
-                        <h3>${mod.name} Workspace</h3>
-                        <p style="color:var(--text-muted); font-size:13px;">${mod.desc}</p>
-                        <div style="padding:15px; background:var(--bg-deep); border-radius:12px; margin-top:15px; color:var(--success); font-weight:600; font-size:13px;">Modul aktif dan berjalan secara mandiri di dalam sistem Core OS.</div>
+                    <div style="background:var(--bg-card); padding:20px; border-radius:12px; text-align:center;">
+                        <h3>${mod.name}</h3>
+                        <p style="color:var(--text-muted); font-size:12px;">${mod.desc}</p>
+                        <div style="color:var(--success); font-weight:600; font-size:12px; margin-top:10px;">Modul aktif dan berjalan mandiri.</div>
                     </div>
                 `;
             }
-
             body.appendChild(wrapper);
             if(mod.type === 'productivity') {
                 document.getElementById('osNotesArea').value = localStorage.getItem('nexus_os_notes') || '';
             }
-
             document.getElementById('workspaceScreen').classList.add('active');
         }
 
-        function closeWorkspace() {
-            document.getElementById('workspaceScreen').classList.remove('active');
-        }
+        function closeWorkspace() { document.getElementById('workspaceScreen').classList.remove('active'); }
 
         function sendAIChat() {
             const input = document.getElementById('aiInput');
             const box = document.getElementById('aiChatBox');
             const val = input.value.trim();
             if(!val) return;
-
-            box.innerHTML += `<div style="background:var(--accent); color:#fff; padding:10px 14px; border-radius:12px; font-size:13px; max-width:85%; align-self:flex-end; font-weight:500;">${val}</div>`;
+            box.innerHTML += `<div style="background:var(--accent); color:#fff; padding:8px 12px; border-radius:8px; font-size:12px; max-width:85%; align-self:flex-end;">${val}</div>`;
             input.value = '';
             box.scrollTop = box.scrollHeight;
-
             setTimeout(() => {
-                box.innerHTML += `<div style="background:var(--bg-hover); padding:10px 14px; border-radius:12px; font-size:13px; max-width:85%;">Neural AI memproses: "${val}". Sistem merespons dengan optimal!</div>`;
+                box.innerHTML += `<div style="background:var(--bg-hover); padding:8px 12px; border-radius:8px; font-size:12px; max-width:85%;">Neural AI memproses: "${val}". Selesai!</div>`;
                 box.scrollTop = box.scrollHeight;
-            }, 600);
+            }, 500);
         }
 
         function saveOSNotes() {
-            const val = document.getElementById('osNotesArea').value;
-            localStorage.setItem('nexus_os_notes', val);
-            alert('Catatan berhasil disimpan ke penyimpanan lokal terenkripsi!');
+            localStorage.setItem('nexus_os_notes', document.getElementById('osNotesArea').value);
+            alert('Catatan disimpan!');
         }
 
         function addLedgerEntry() {
             const desc = document.getElementById('finDesc').value;
             const nom = document.getElementById('finNom').value;
-            if(!desc || !nom) return alert('Lengkapi data transaksi!');
-            document.getElementById('ledgerLog').innerHTML = `<div style="background:var(--bg-card); padding:10px 14px; border-radius:10px; margin-top:5px; color:var(--text-main); border:1px solid var(--border);"><b>+ Rp ${Number(nom).toLocaleString()}</b> (${desc})</div>`;
-            alert('Transaksi berhasil dicatat ke Ledger!');
+            if(!desc || !nom) return alert('Isi data lengkap!');
+            document.getElementById('ledgerLog').innerHTML = `<b>+ Rp ${Number(nom).toLocaleString()}</b> (${desc})`;
+            alert('Dicatat!');
         }
 
-        // Social Community Feed
         function renderFeed() {
             const container = document.getElementById('feedContainer');
             container.innerHTML = '';
@@ -558,32 +502,25 @@
                 const item = document.createElement('div');
                 item.style.background = 'var(--bg-card)';
                 item.style.border = '1px solid var(--border)';
-                item.style.borderRadius = '16px';
-                item.style.padding = '16px';
+                item.style.borderRadius = '12px';
+                item.style.padding = '12px';
                 item.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                        <b style="font-size:13px; color:var(--accent);">@${post.author}</b>
-                        <span style="font-size:11px; color:var(--text-muted);">${post.time}</span>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <b style="font-size:12px; color:var(--accent);">@${post.author}</b>
+                        <span style="font-size:10px; color:var(--text-muted);">${post.time}</span>
                     </div>
-                    <p style="margin:0 0 12px 0; font-size:13px; line-height:1.4;">${post.text}</p>
-                    <button class="btn btn-outline" style="padding:6px 12px; font-size:11px;" onclick="likePost(${post.id})">❤️ Suka (${post.likes})</button>
+                    <p style="margin:0 0 8px 0; font-size:12px;">${post.text}</p>
+                    <button class="btn btn-outline" style="padding:4px 8px; font-size:10px;" onclick="likePost(${post.id})">❤️ Suka (${post.likes})</button>
                 `;
                 container.appendChild(item);
             });
         }
 
         function createPost() {
-            if(!appState.currentUser) return alert('Silakan login terlebih dahulu di tab Profile untuk membuat postingan!');
+            if(!appState.currentUser) return alert('Silakan login terlebih dahulu di profil!');
             const text = document.getElementById('postContentInput').value.trim();
             if(!text) return;
-
-            appState.posts.unshift({
-                id: Date.now(),
-                author: appState.currentUser.username,
-                text: text,
-                time: 'Baru saja',
-                likes: 0
-            });
+            appState.posts.unshift({ id: Date.now(), author: appState.currentUser.username, text: text, time: 'Baru saja', likes: 0 });
             localStorage.setItem('nexus_posts', JSON.stringify(appState.posts));
             document.getElementById('postContentInput').value = '';
             renderFeed();
@@ -594,20 +531,19 @@
             if(post) { post.likes++; localStorage.setItem('nexus_posts', JSON.stringify(appState.posts)); renderFeed(); }
         }
 
-        // Profile & Secure Registration / Personalization Settings
         function renderProfileView() {
             const container = document.getElementById('profileCardContent');
             const user = appState.currentUser;
 
             if(!user) {
                 container.innerHTML = `
-                    <div class="workspace-card" style="background:var(--bg-card); border:1px solid var(--border); border-radius:20px; padding:22px;">
-                        <h3 style="margin-top:0; font-size:18px;">Autentikasi & Registrasi Nexus</h3>
-                        <p style="font-size:12px; color:var(--text-muted); line-height:1.4;">Gunakan akun <b>admin</b> (Password: <b>adminpassword</b>) untuk akses penuh pengembang/developer, atau buat akun baru.</p>
-                        <div class="form-group"><label>Username</label><input type="text" id="regUser" class="form-control" placeholder="Nama pengguna..."></div>
-                        <div class="form-group"><label>Password</label><input type="password" id="regPass" class="form-control" placeholder="Kata sandi..."></div>
-                        <div style="display:flex; gap:10px; margin-top:12px;">
-                            <button class="btn" style="flex:1;" onclick="handleRegister()">Daftar Akun</button>
+                    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:16px; padding:18px;">
+                        <h3 style="margin-top:0; font-size:15px;">Autentikasi & Registrasi</h3>
+                        <p style="font-size:11px; color:var(--text-muted);">Admin: <b>admin</b> / <b>adminpassword</b></p>
+                        <div class="form-group"><label>Username</label><input type="text" id="regUser" class="form-control" placeholder="Username..."></div>
+                        <div class="form-group"><label>Password</label><input type="password" id="regPass" class="form-control" placeholder="Password..."></div>
+                        <div style="display:flex; gap:8px; margin-top:8px;">
+                            <button class="btn" style="flex:1;" onclick="handleRegister()">Daftar</button>
                             <button class="btn btn-outline" style="flex:1;" onclick="handleLogin()">Masuk</button>
                         </div>
                     </div>
@@ -616,39 +552,35 @@
                 container.innerHTML = `
                     <div class="profile-banner">
                         <img class="profile-avatar-lg" src="${user.avatar}" alt="Avatar">
-                        <h2 style="margin:0; font-size:18px;">@${user.username}</h2>
-                        <span style="font-size:11px; background:rgba(0,0,0,0.35); padding:4px 12px; border-radius:12px; font-weight:700;">${user.role}</span>
+                        <h2 style="margin:0; font-size:16px;">@${user.username}</h2>
+                        <span style="font-size:10px; background:rgba(0,0,0,0.3); padding:2px 8px; border-radius:8px; font-weight:700;">${user.role}</span>
                         <div class="profile-stats">
-                            <div><b>12</b> Postingan</div>
-                            <div><b>54</b> Pengikut</div>
-                            <div><b>28</b> Mengikuti</div>
+                            <div><b>12</b> Post</div>
+                            <div><b>48</b> Followers</div>
                         </div>
                     </div>
-                    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:18px; padding:18px; display:flex; flex-direction:column; gap:14px;">
-                        <h4 style="margin:0; font-size:14px; font-weight:700;">Personalisasi & Keamanan Akun</h4>
-                        
+                    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:14px; display:flex; flex-direction:column; gap:10px;">
+                        <h4 style="margin:0; font-size:13px;">Pengaturan Akun & Tema</h4>
+                        <div class="form-group"><label>Bio</label><input type="text" id="editBio" class="form-control" value="${user.bio || ''}"></div>
+                        <div class="form-group"><label>URL Avatar</label><input type="text" id="editAvatar" class="form-control" value="${user.avatar || ''}"></div>
                         <div class="form-group">
-                            <label>Bio Singkat</label>
-                            <input type="text" id="editBio" class="form-control" value="${user.bio || ''}">
+                            <label>Tema Preset</label>
+                            <select id="editThemePreset" class="form-select">
+                                <option value="midnight" ${user.themePreset==='midnight'?'selected':''}>Cyber Midnight (Default)</option>
+                                <option value="emerald" ${user.themePreset==='emerald'?'selected':''}>Emerald Matrix</option>
+                                <option value="sunset" ${user.themePreset==='sunset'?'selected':''}>Neon Sunset</option>
+                                <option value="obsidian" ${user.themePreset==='obsidian'?'selected':''}>Obsidian Dark</option>
+                            </select>
                         </div>
-                        
-                        <div class="form-group">
-                            <label>URL Foto Profil (Avatar)</label>
-                            <input type="text" id="editAvatar" class="form-control" value="${user.avatar || ''}" placeholder="https://...">
+                        <div class="form-group"><label>Warna Aksen Kustom</label><input type="color" id="editColor" value="${user.themeColor || '#6366f1'}" style="width:100%; height:36px; background:none; border:none; cursor:pointer; border-radius:8px;"></div>
+                        <div class="form-group"><label>Bahasa / Language</label>
+                            <select id="editLang" class="form-select">
+                                <option value="id" ${user.lang==='id'?'selected':''}>Bahasa Indonesia</option>
+                                <option value="en" ${user.lang==='en'?'selected':''}>English</option>
+                            </select>
                         </div>
-
-                        <div class="form-group">
-                            <label>Warna Tema UI (Accent Color)</label>
-                            <input type="color" id="editColor" value="${user.themeColor || '#6366f1'}" style="width:100%; height:42px; background:none; border:none; cursor:pointer; border-radius:10px;">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Ubah Kata Sandi Baru (Keamanan)</label>
-                            <input type="password" id="newPass" class="form-control" placeholder="Kosongkan jika tidak diubah...">
-                        </div>
-
-                        <button class="btn" onclick="saveProfileChanges()">Simpan Perubahan & Tema</button>
-                        <button class="btn btn-danger" onclick="handleLogout()">Keluar Akun</button>
+                        <button class="btn" onclick="saveProfileChanges()">Simpan Pengaturan</button>
+                        <button class="btn btn-danger" onclick="handleLogout()">Keluar</button>
                     </div>
                 `;
             }
@@ -657,110 +589,77 @@
         function handleRegister() {
             const u = document.getElementById('regUser').value.trim();
             const p = document.getElementById('regPass').value.trim();
-            if(!u || !p) return alert('Isi username dan password dengan benar!');
-
-            let existingUsers = JSON.parse(localStorage.getItem('nexus_users_db') || '[]');
-            if(existingUsers.find(x => x.username === u)) return alert('Username sudah terdaftar! Gunakan nama lain atau masuk.');
-
-            const roleVal = (u.toLowerCase() === 'admin' || u.toLowerCase() === 'developer') ? 'Developer' : 'Member';
-            const newUser = {
-                username: u,
-                password: p,
-                role: roleVal,
-                bio: 'Anggota Nexus Core OS',
-                avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${u}`,
-                themeColor: '#6366f1'
-            };
-
-            existingUsers.push(newUser);
-            appState.users = existingUsers;
+            if(!u || !p) return alert('Isi data!');
+            let db = JSON.parse(localStorage.getItem('nexus_users_db') || '[]');
+            if(db.find(x => x.username === u)) return alert('Username sudah ada!');
+            const newUser = { username: u, password: p, role: (u==='admin'||u==='developer')?'Developer':'Member', bio: 'Member', avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${u}`, themeColor: '#6366f1', themePreset: 'midnight', lang: 'id' };
+            db.push(newUser);
+            appState.users = db;
             appState.currentUser = newUser;
-
-            localStorage.setItem('nexus_users_db', JSON.stringify(existingUsers));
+            localStorage.setItem('nexus_users_db', JSON.stringify(db));
             localStorage.setItem('nexus_current_session', JSON.stringify(newUser));
-
             initOS();
-            alert(`Registrasi berhasil! Selamat datang, ${u}. Akses Anda: ${roleVal}`);
+            alert('Registrasi berhasil!');
         }
 
         function handleLogin() {
             const u = document.getElementById('regUser').value.trim();
             const p = document.getElementById('regPass').value.trim();
-            if(!u || !p) return alert('Masukkan username dan password!');
-
-            let existingUsers = JSON.parse(localStorage.getItem('nexus_users_db') || '[]');
-            const found = existingUsers.find(x => x.username === u && x.password === p);
-            
-            if(!found) {
-                return alert('Gagal masuk! Username atau password salah. Untuk akses admin gunakan username: admin, password: adminpassword');
-            }
-
+            let db = JSON.parse(localStorage.getItem('nexus_users_db') || '[]');
+            const found = db.find(x => x.username === u && x.password === p);
+            if(!found) return alert('Login gagal! Gunakan admin / adminpassword');
             appState.currentUser = found;
             localStorage.setItem('nexus_current_session', JSON.stringify(found));
-
             initOS();
-            alert(`Berhasil masuk sebagai @${found.username} (${found.role})!`);
+            alert(`Selamat datang kembali, @${found.username}!`);
         }
 
         function handleLogout() {
             appState.currentUser = null;
             localStorage.removeItem('nexus_current_session');
-            document.documentElement.style.setProperty('--accent', '#6366f1');
             initOS();
-            alert('Berhasil keluar akun.');
+            alert('Keluar akun.');
         }
 
         function saveProfileChanges() {
             if(!appState.currentUser) return;
+            appState.currentUser.bio = document.getElementById('editBio').value;
+            appState.currentUser.avatar = document.getElementById('editAvatar').value;
+            appState.currentUser.themePreset = document.getElementById('editThemePreset').value;
+            appState.currentUser.themeColor = document.getElementById('editColor').value;
+            appState.currentUser.lang = document.getElementById('editLang').value;
 
-            const newBio = document.getElementById('editBio').value;
-            const newAvatar = document.getElementById('editAvatar').value;
-            const newColor = document.getElementById('editColor').value;
-            const newPass = document.getElementById('newPass').value;
-
-            appState.currentUser.bio = newBio;
-            if(newAvatar) appState.currentUser.avatar = newAvatar;
-            appState.currentUser.themeColor = newColor;
-            if(newPass) appState.currentUser.password = newPass;
-
-            let existingUsers = JSON.parse(localStorage.getItem('nexus_users_db') || '[]');
-            const idx = existingUsers.findIndex(x => x.username === appState.currentUser.username);
-            if(idx !== -1) {
-                existingUsers[idx] = appState.currentUser;
-            } else {
-                existingUsers.push(appState.currentUser);
-            }
-
-            localStorage.setItem('nexus_users_db', JSON.stringify(existingUsers));
+            let db = JSON.parse(localStorage.getItem('nexus_users_db') || '[]');
+            const idx = db.findIndex(x => x.username === appState.currentUser.username);
+            if(idx !== -1) db[idx] = appState.currentUser;
+            localStorage.setItem('nexus_users_db', JSON.stringify(db));
             localStorage.setItem('nexus_current_session', JSON.stringify(appState.currentUser));
-
-            document.documentElement.style.setProperty('--accent', newColor);
             initOS();
-            alert('Personalisasi profil, tema, dan keamanan sandi berhasil diperbarui permanen!');
+            alert('Pengaturan disimpan!');
         }
 
-        // Admin / Developer Command Center Logic
         function renderAdminUserList() {
             const listEl = document.getElementById('adminUserList');
             if(!listEl) return;
             listEl.innerHTML = '';
-            
-            let existingUsers = JSON.parse(localStorage.getItem('nexus_users_db') || '[]');
-            existingUsers.forEach(u => {
+            let db = JSON.parse(localStorage.getItem('nexus_users_db') || '[]');
+            db.forEach(u => {
                 const row = document.createElement('div');
-                row.style.display = 'flex';
-                row.style.justifyContent = 'space-between';
-                row.style.alignItems = 'center';
-                row.style.padding = '8px 0';
-                row.style.borderBottom = '1px solid var(--border)';
-                row.innerHTML = `<span><b>@${u.username}</b> (${u.role})</span> <span style="color:var(--text-muted); font-size:11px;">Pass: ${u.password}</span>`;
+                row.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--border);";
+                row.innerHTML = `<span><b>@${u.username}</b> (${u.role})</span> ${u.username !== 'admin' ? `<button class="btn btn-danger" style="padding:2px 6px; font-size:9px;" onclick="adminDeleteUser('${u.username}')">Hapus</button>` : ''}`;
                 listEl.appendChild(row);
             });
-
             const jsonEditor = document.getElementById('adminJsonEditor');
-            if(jsonEditor && !jsonEditor.value) {
-                jsonEditor.value = JSON.stringify(appState.config, null, 2);
-            }
+            if(jsonEditor && !jsonEditor.value) jsonEditor.value = JSON.stringify(appState.config, null, 2);
+        }
+
+        function adminDeleteUser(uname) {
+            if(!confirm(`Hapus user @${uname}?`)) return;
+            let db = JSON.parse(localStorage.getItem('nexus_users_db') || '[]');
+            db = db.filter(x => x.username !== uname);
+            localStorage.setItem('nexus_users_db', JSON.stringify(db));
+            renderAdminUserList();
+            alert('User dihapus.');
         }
 
         function saveAdminConfig() {
@@ -769,13 +668,10 @@
                 appState.config = parsed;
                 localStorage.setItem('nexus_config_override', JSON.stringify(parsed));
                 renderModules();
-                alert('Konfigurasi Gist Global berhasil diperbarui oleh Admin Root!');
-            } catch(e) {
-                alert('Format JSON tidak valid! Periksa kembali sintaksis kode Anda.');
-            }
+                alert('Konfigurasi Gist diperbarui!');
+            } catch(e) { alert('Format JSON salah!'); }
         }
 
-        // Initialize OS Execution on load
         initOS();
     </script>
 </body>
